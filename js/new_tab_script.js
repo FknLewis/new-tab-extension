@@ -35,7 +35,6 @@ $(document).ready(function(){
 	var background = ["images/backgrounds/1.jpg", // stores background images in array
 					 "images/backgrounds/2.png",
 					 "images/backgrounds/4.jpg", 
-					 "images/backgrounds/5.jpg",
 					 "images/backgrounds/8.jpg",
 					 "images/backgrounds/9.jpg",
 					 "images/backgrounds/10.jpg",
@@ -114,6 +113,22 @@ $(document).ready(function(){
 			chrome.storage.sync.clear();
 		}
 		$('body').css({'background-image': 'url(' + background[right] + ')'});
+	});
+
+	$('#notes-icon').click(function(){
+		$(this).toggleClass("pinned");
+		if($('#notes-icon').hasClass('pinned')){
+			$('#time-wrapper').css({top: "13%"})
+			setTimeout(function(){
+			$('#notes-wrapper').css({opacity: 1});
+			},500);
+		}
+		else {
+			$('#notes-wrapper').css({opacity: 0});
+			setTimeout(function(){
+			$('#time-wrapper').css({top: "50%"});
+			},500);
+		}
 	});
 
 })
