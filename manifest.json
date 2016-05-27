@@ -1,0 +1,16 @@
+{
+"name": "Minimalist New Tab Page",
+"description": "New tab page with a chilled out minimalist look",
+"version": "1.0.0",
+"manifest_version": 2,
+"permissions": ["storage"],
+"browser_action": {
+  "default_popup": "popup.html"
+},
+"icons": {
+"128": "icons/dragon_icon.png"
+},
+"chrome_url_overrides" : {
+ "newtab": "new_tab.html"
+}
+}
