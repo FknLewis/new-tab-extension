@@ -118,6 +118,7 @@ $(document).ready(function(){
 	$('#notes-icon').click(function(){
 		$(this).toggleClass("pinned");
 		if($('#notes-icon').hasClass('pinned')){
+			$('#input-box').focus();
 			$('#time-wrapper').css({top: "13%"})
 			setTimeout(function(){
 			$('#notes-wrapper').css({opacity: 1});
@@ -130,6 +131,16 @@ $(document).ready(function(){
 			},500);
 		}
 	});
+
+	$("#input-box").keypress(function (e) {
+	 	var note = $('#input-box').val();
+        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+            if(note != "" && note != " "){
+            console.log(note);
+            $("#notes-wrapper").append("<div class='note'>"+note+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
+            $(this).val('');}
+        }
+    });
 
 })
 

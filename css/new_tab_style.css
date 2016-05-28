@@ -94,28 +94,56 @@ body {
 	top: 13%;
 }
 
-.input-box{
+#input-box{
 	overflow: auto;
 	font-family: 'Arial', serif;
+	border-bottom: 3px solid white;
 	resize: none;
+	font-weight: bold;
 	outline: none;
 	width: 100%;
-	height: 100%;
 	border-color: Transparent;  
-	font-size: 3em;
+	font-size: 2em;
 	color:white;
+	padding:0em 0.4em;
 	background-color: rgba(0, 0, 0, 0);
+}
+
+.note {
+	font-family: 'Arial', serif;
+	font-size: 2em;
+	width: 100%;
+	display: inline-block
+	color:white;
+	padding: 0.5em;
+	border-top: 1px solid white;
+}
+
+.remove {
+	transition: all 0.5s ease;
+	position: relative;
+	float: right;
+	line-height: 1.1em;
+	cursor: pointer;
+	margin-top: 0.2em;
+}
+
+.remove:hover{
+	-webkit-transform: rotate(360deg);
+ 	 transform: rotate(360deg);
+}
+
+::-webkit-input-placeholder {
+   color: rgba(255, 255, 255, 0.5);
 }
 
 #notes-wrapper {
 	transition: all 0.5s ease;
 	opacity: 0;
 	background-color: rgba(0, 0, 0, 0.8);
-	border: 1px solid white;
 	color: white;
 	position: relative;
 	width: 40vw;
-	height: 70vh;
 	left: 30vw;
 	margin-top: 5vh;
 }
