@@ -113,10 +113,11 @@ body {
 	font-family: 'Arial', serif;
 	font-size: 2em;
 	width: 100%;
-	display: inline-block
+	display: inline-block;
 	color:white;
 	padding: 0.5em;
 	border-top: 1px solid white;
+	word-wrap: break-word;
 }
 
 .remove {

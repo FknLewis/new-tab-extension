@@ -135,13 +135,20 @@ $(document).ready(function(){
 	$("#input-box").keypress(function (e) {
 	 	var note = $('#input-box').val();
         if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-            if(note != "" && note != " "){
-            console.log(note);
-            $("#notes-wrapper").append("<div class='note'>"+note+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
-            $(this).val('');}
+            if(note != "" && note != " " && note.charAt(0) != " "){
+	            $("#notes-wrapper").append("<div class='note'>"+note+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
+	            $(this).val('');
+	            console.log($('#notes-wrapper').offsetTop())
+        	}
+        	else { 
+        		$(this).val('');
+        	}
         }
     });
 
+    $(document).on('click', '.remove', function() {
+    	$(this).parent().remove();
+	});
 })
 
 function updateClock(){ //get time
