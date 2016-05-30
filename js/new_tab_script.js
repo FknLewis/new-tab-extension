@@ -117,18 +117,22 @@ $(document).ready(function(){
 
 	$('#notes-icon').click(function(){ //brings up notes diaply & moves date/time to top
 		$(this).toggleClass("pinned");
+		document.getElementById('notes-icon').style.pointerEvents = 'none';
+		setTimeout(function(){
+			document.getElementById('notes-icon').style.pointerEvents = 'auto'; 
+		},300);
 		if($('#notes-icon').hasClass('pinned')){
 			$('#input-box').focus();
 			$('#time-wrapper').css({top: "13%"})
 			setTimeout(function(){
 			$('#notes-wrapper').css({opacity: 1});
-			},500);
+			},400);
 		}
 		else {
 			$('#notes-wrapper').css({opacity: 0});
 			setTimeout(function(){
 			$('#time-wrapper').css({top: "50%"});
-			},500);
+			},300);
 		}
 	});
 
