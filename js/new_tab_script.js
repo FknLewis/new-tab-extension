@@ -46,11 +46,7 @@ $(document).ready(function(){
 					 "images/backgrounds/firewatch.jpg"];
 	var bgAmount = background.length;
 	var bg = background[Math.floor((Math.random() * bgAmount) + 0)];
-
-	chrome.storage.sync.get('note', function(data){ //gets saved notes
-			$('#notes-wrapper').append("<div class='note'>"+data.note+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
-	});
-
+	
 	chrome.storage.sync.get('background',function(data){ 
 		if(!data.background){
 			$('body').css({'background-image': 'url(' + bg + ')'}); //sets random background if no stored background is found
@@ -136,32 +132,52 @@ $(document).ready(function(){
 		}
 	});
 
-	$("#input-box").keypress(function (e) { //create notes
+	chrome.storage.sync.get('notes', function(data){
+		var notes = data.notes;
+		if(!notes){
+			var notes=[];
+			chrome.storage.sync.set({'notes':notes})
+		}
+		else{
+			for (i = 0; i < notes.length; i++){
+				$("#notes-wrapper").append("<div class='note'>"+notes[i]+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
+			}
+		}
+		$("#input-box").keypress(function (e) { //create notes
+
 	 	var note = $('#input-box').val();
 	 	var $notesWrapper = $('#notes-wrapper');
 		var bottom = $notesWrapper.position().top + $notesWrapper.outerHeight(true); //returns pixels from top of window to bottom of div
-        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-            if(note != "" && note != " " && note.charAt(0) != " " && bottom < ( ($(window).height()) - $(window).height() / 100 * 10) ) {
-	            $("#notes-wrapper").append("<div class='note'>"+note+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
-	            $(this).val('');
-	            chrome.storage.sync.set({'note' : note});
-        	}
-        	else if ( bottom >= ( ($(window).height()) - $(window).height() / 100 * 10) ) {
-        		$(this).val('');
-        		$("#input-box").prop('disabled', true);
-        		$('#input-box').attr('placeholder', "Max number of reminders reached")
-        	}
-        	else {
-        		$(this).val('');
-        	}
-        }
-    });
+	        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+	            if(note != "" && note != " " && note.charAt(0) != " " && bottom < ( ($(window).height()) - $(window).height() / 100 * 10) ) {
+	   	            notes.push($(this).val());
+		            console.log(notes);
+		            $("#notes-wrapper").append("<div class='note'>"+note+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
+		            $(this).val('');
+		            chrome.storage.sync.set({'notes':notes});
+	        	}
+	        	else if ( bottom >= ( ($(window).height()) - $(window).height() / 100 * 10) ) {
+	        		$(this).val('');
+	        		$("#input-box").prop('disabled', true);
+	        		$('#input-box').attr('placeholder', "Max number of reminders reached")
+	        	}
+	        	else {
+	        		$(this).val('');
+	        	}
+	        }
+    	});
 
-    $(document).on('click', '.remove', function() {  //removes note if X is pressed
-    	$(this).parent().remove();
-    	$("#input-box").prop('disabled', false);
-    	$('#input-box').attr('placeholder', "Create a reminder")
-	});
+		$(document).on('click', '.remove', function() {  //removes note if X is pressed
+			var text = $(this).parent().text();
+			var toFind = (text.substring(0,text.length-1));
+			foundIndex = notes.indexOf(toFind);
+			notes.splice(foundIndex, 1);
+	    	$(this).parent().remove();
+	    	chrome.storage.sync.set({'notes':notes});
+	    	$("#input-box").prop('disabled', false);
+	    	$('#input-box').attr('placeholder', "Create a reminder")
+		});
+	})
 })
 
 function updateClock(){ //get time
