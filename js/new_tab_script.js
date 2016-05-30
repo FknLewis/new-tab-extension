@@ -47,6 +47,10 @@ $(document).ready(function(){
 	var bgAmount = background.length;
 	var bg = background[Math.floor((Math.random() * bgAmount) + 0)];
 
+	chrome.storage.sync.get('note', function(data){ //gets saved notes
+			$('#notes-wrapper').append("<div class='note'>"+data.note+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
+	});
+
 	chrome.storage.sync.get('background',function(data){ 
 		if(!data.background){
 			$('body').css({'background-image': 'url(' + bg + ')'}); //sets random background if no stored background is found
@@ -63,7 +67,7 @@ $(document).ready(function(){
 		if ($('#pin').hasClass("glyphicon glyphicon-heart")){
 			$('#pin').removeClass("glyphicon glyphicon-heart");
 			$('#pin').addClass("glyphicon glyphicon-heart-empty");
-			chrome.storage.sync.clear();
+			chrome.storage.sync.remove('background');
 		}
 	});
 
@@ -77,7 +81,7 @@ $(document).ready(function(){
 		else if ($(this).hasClass("glyphicon glyphicon-heart")){
 			$(this).removeClass("glyphicon glyphicon-heart");
 			$(this).addClass("glyphicon glyphicon-heart-empty");
-			chrome.storage.sync.clear();
+			chrome.storage.sync.remove('background');
 		}
 	});
 
@@ -93,7 +97,7 @@ $(document).ready(function(){
 		if ($('#pin').hasClass("glyphicon glyphicon-heart")){
 			$('#pin').removeClass("glyphicon glyphicon-heart");
 			$('#pin').addClass("glyphicon glyphicon-heart-empty");
-			chrome.storage.sync.clear();
+			chrome.storage.sync.remove('background');
 		}
 		$('body').css({'background-image': 'url(' + background[left] + ')'});		
 	});
@@ -110,12 +114,12 @@ $(document).ready(function(){
 		if ($('#pin').hasClass("glyphicon glyphicon-heart")){
 			$('#pin').removeClass("glyphicon glyphicon-heart");
 			$('#pin').addClass("glyphicon glyphicon-heart-empty");
-			chrome.storage.sync.clear();
+			chrome.storage.sync.remove('background');
 		}
 		$('body').css({'background-image': 'url(' + background[right] + ')'});
 	});
 
-	$('#notes-icon').click(function(){
+	$('#notes-icon').click(function(){ //brings up notes diaply & moves date/time to top
 		$(this).toggleClass("pinned");
 		if($('#notes-icon').hasClass('pinned')){
 			$('#input-box').focus();
@@ -132,22 +136,31 @@ $(document).ready(function(){
 		}
 	});
 
-	$("#input-box").keypress(function (e) {
+	$("#input-box").keypress(function (e) { //create notes
 	 	var note = $('#input-box').val();
+	 	var $notesWrapper = $('#notes-wrapper');
+		var bottom = $notesWrapper.position().top + $notesWrapper.outerHeight(true); //returns pixels from top of window to bottom of div
         if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-            if(note != "" && note != " " && note.charAt(0) != " "){
+            if(note != "" && note != " " && note.charAt(0) != " " && bottom < ( ($(window).height()) - $(window).height() / 100 * 10) ) {
 	            $("#notes-wrapper").append("<div class='note'>"+note+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
 	            $(this).val('');
-	            console.log($('#notes-wrapper').offsetTop())
+	            chrome.storage.sync.set({'note' : note});
         	}
-        	else { 
+        	else if ( bottom >= ( ($(window).height()) - $(window).height() / 100 * 10) ) {
+        		$(this).val('');
+        		$("#input-box").prop('disabled', true);
+        		$('#input-box').attr('placeholder', "Max number of reminders reached")
+        	}
+        	else {
         		$(this).val('');
         	}
         }
     });
 
-    $(document).on('click', '.remove', function() {
+    $(document).on('click', '.remove', function() {  //removes note if X is pressed
     	$(this).parent().remove();
+    	$("#input-box").prop('disabled', false);
+    	$('#input-box').attr('placeholder', "Create a reminder")
 	});
 })
 
