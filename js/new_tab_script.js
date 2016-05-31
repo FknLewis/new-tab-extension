@@ -214,6 +214,9 @@ function updateClock(){ //get time
     var d = new Date(); //returns current date and time
     var date = d.getDate(); //current date of month
     var hour = d.getHours(); //current hour of the time
+    	if (hour <= 9){
+    		hour = "0" + hour;
+    	}
     var minute = d.getMinutes(); //current minute of the time
 	    if (minute <= 9){
 	    	minute = "0" + minute;
