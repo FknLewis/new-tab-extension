@@ -1,6 +1,6 @@
 {
-"name": "Minimalist New Tab Page",
-"description": "New tab page with a chilled out minimalist look",
+"name": "Poly Tab",
+"description": "Replaces new tab page with a minimialistic styled dashboard",
 "version": "1.0.0",
 "manifest_version": 2,
 "permissions": ["storage"],
