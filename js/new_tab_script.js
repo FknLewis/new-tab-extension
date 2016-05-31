@@ -117,10 +117,10 @@ $(document).ready(function(){
 
 	$('#notes-icon').click(function(){ //brings up notes diaply & moves date/time to top
 		$(this).toggleClass("pinned");
-		document.getElementById('notes-icon').style.pointerEvents = 'none';
+		/*document.getElementById('notes-icon').style.pointerEvents = 'none';
 		setTimeout(function(){
 			document.getElementById('notes-icon').style.pointerEvents = 'auto'; 
-		},300);
+		},300);*/
 		if($('#notes-icon').hasClass('pinned')){
 			$('#input-box').focus();
 			$('#time-wrapper').css({top: "13%"})
