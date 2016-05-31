@@ -7,6 +7,20 @@ html {
 	max-height: 100vh;
 	font-size: 1vw;
 }
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.0);
+}
+::-webkit-scrollbar-thumb {
+    background-color: white;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: white;
+}
+
 body {
 	font-family: 'Bebas', cursive;
 	height: 100%;
@@ -86,7 +100,6 @@ body {
 	width: 30vw;
 	position: relative;
 	text-align: center;
-	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);	
 }
@@ -117,7 +130,8 @@ body {
 	display: inline-block;
 	color:white;
 	padding: 0.5em;
-	border-top: 1px solid white;
+	border-top: 1px solid rgba(255, 255, 255, 0.3);
+	border-right: 1px solid rgba(255, 255, 255, 0.3);
 	word-wrap: break-word;
 }
 
@@ -140,10 +154,15 @@ body {
 }
 
 #notes-wrapper {
-	max-height: 100%;
+	max-height: 65%;
+	overflow-x: hidden;
+	overflow-y: auto;
 	transition: all 0.5s ease;
 	opacity: 0;
 	background-color: rgba(0, 0, 0, 0.8);
+	border-top: 1px solid rgba(255, 255, 255, 0.3);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+	border-left: 1px solid rgba(255, 255, 255, 0.3);
 	color: white;
 	position: relative;
 	width: 40vw;

@@ -58,6 +58,23 @@ $(document).ready(function(){
 		}
 	})
 
+
+	chrome.storage.sync.get('notePin', function(data){ //check if notes are pinned or not
+		var notePin = data.notePin;
+		if(notePin){
+			$('#notes-icon').addClass(notePin);
+			$('#input-box').focus();
+			$('#time-wrapper').css({top: "13%"})
+			$('#notes-wrapper').css({opacity: 1});
+		}
+		else if(!notePin){
+			$('#time-wrapper').css({top:'50%'});
+			$('#notes-wrapper').css({opacity: 0});
+		}
+	})
+
+
+
 	$("#refresh").click(function() { //refreshed background to a random background
 		$('body').css({'background-image': 'url(' + background[Math.floor((Math.random() * bgAmount) + 0)]  + ')'}); //sets random background*/
 		if ($('#pin').hasClass("glyphicon glyphicon-heart")){
@@ -66,6 +83,9 @@ $(document).ready(function(){
 			chrome.storage.sync.remove('background');
 		}
 	});
+
+
+
 
 	$("#pin").click(function() {
 		var storedbg = document.getElementById('background').style.backgroundImage; //stores current background
@@ -80,6 +100,9 @@ $(document).ready(function(){
 			chrome.storage.sync.remove('background');
 		}
 	});
+
+
+
 
 	$("#bg-left").click(function() { //navigates to previous background
 		var currentbg = document.getElementById('background').style.backgroundImage;
@@ -115,32 +138,39 @@ $(document).ready(function(){
 		$('body').css({'background-image': 'url(' + background[right] + ')'});
 	});
 
-	$('#notes-icon').click(function(){ //brings up notes diaply & moves date/time to top
+
+
+
+
+	$('#notes-icon').click(function(){ //brings up notes display & moves date/time to top
 		$(this).toggleClass("pinned");
-		/*document.getElementById('notes-icon').style.pointerEvents = 'none';
 		setTimeout(function(){
-			document.getElementById('notes-icon').style.pointerEvents = 'auto'; 
-		},300);*/
-		if($('#notes-icon').hasClass('pinned')){
-			$('#input-box').focus();
+			if($('#notes-icon').hasClass('pinned')){
+			var notePin = 'pinned';
+			chrome.storage.sync.set({'notePin': notePin});
 			$('#time-wrapper').css({top: "13%"})
 			setTimeout(function(){
-			$('#notes-wrapper').css({opacity: 1});
+				$('#notes-wrapper').css({opacity: 1});
 			},400);
-		}
-		else {
-			$('#notes-wrapper').css({opacity: 0});
-			setTimeout(function(){
-			$('#time-wrapper').css({top: "50%"});
-			},300);
-		}
+			}
+			else {
+				$('#notes-wrapper').css({opacity: 0});
+				setTimeout(function(){
+					$('#time-wrapper').css({top:'50%'});
+				}, 400)
+				chrome.storage.sync.remove('notePin');
+			}
+		}, 250)
 	});
 
-	chrome.storage.sync.get('notes', function(data){
+
+
+
+	chrome.storage.sync.get('notes', function(data){ //load and create saved notes if any exist
 		var notes = data.notes;
 		if(!notes){
 			var notes=[];
-			chrome.storage.sync.set({'notes':notes})
+			chrome.storage.sync.set({'notes':notes});
 		}
 		else{
 			for (i = 0; i < notes.length; i++){
@@ -151,25 +181,21 @@ $(document).ready(function(){
 
 	 	var note = $('#input-box').val();
 	 	var $notesWrapper = $('#notes-wrapper');
-		var bottom = $notesWrapper.position().top + $notesWrapper.outerHeight(true); //returns pixels from top of window to bottom of div
 	        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-	            if(note != "" && note != " " && note.charAt(0) != " " && bottom < ( ($(window).height()) - $(window).height() / 100 * 10) ) {
+	            if(note != "" && note != " " && note.charAt(0) != " ") {
 	   	            notes.push($(this).val());
-		            console.log(notes);
 		            $("#notes-wrapper").append("<div class='note'>"+note+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
 		            $(this).val('');
 		            chrome.storage.sync.set({'notes':notes});
-	        	}
-	        	else if ( bottom >= ( ($(window).height()) - $(window).height() / 100 * 10) ) {
-	        		$(this).val('');
-	        		$("#input-box").prop('disabled', true);
-	        		$('#input-box').attr('placeholder', "Max number of reminders reached")
 	        	}
 	        	else {
 	        		$(this).val('');
 	        	}
 	        }
     	});
+
+
+
 
 		$(document).on('click', '.remove', function() {  //removes note if X is pressed
 			var text = $(this).parent().text();
