@@ -125,7 +125,7 @@ body {
 
 .note {
 	font-family: 'Arial', serif;
-	font-size: 2em;
+	font-size: 1.5em;
 	width: 100%;
 	display: inline-block;
 	color:white;
@@ -152,22 +152,31 @@ body {
 ::-webkit-input-placeholder {
    color: rgba(255, 255, 255, 0.5);
 }
-
+#input-wrapper {
+	opacity: 0;
+	margin-top: 5vh;
+	position: relative;
+	transition: all 0.5s ease;
+	width: 40vw;
+	left: 30vw;
+	background-color: rgba(0, 0, 0, 0.8);
+	border-top: 1px solid rgba(255, 255, 255, 0.3);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+	border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
 #notes-wrapper {
-	max-height: 65%;
+	max-height: 55%;
 	overflow-x: hidden;
 	overflow-y: auto;
 	transition: all 0.5s ease;
 	opacity: 0;
 	background-color: rgba(0, 0, 0, 0.8);
-	border-top: 1px solid rgba(255, 255, 255, 0.3);
 	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 	border-left: 1px solid rgba(255, 255, 255, 0.3);
 	color: white;
 	position: relative;
 	width: 40vw;
 	left: 30vw;
-	margin-top: 5vh;
 }
 
 #time {

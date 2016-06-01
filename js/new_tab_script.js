@@ -64,12 +64,14 @@ $(document).ready(function(){
 		if(notePin){
 			$('#notes-icon').addClass(notePin);
 			$('#input-box').focus();
-			$('#time-wrapper').css({top: "13%"})
+			$('#time-wrapper').css({top: "13%"});
 			$('#notes-wrapper').css({opacity: 1});
+			$('#input-wrapper').css({opacity: 1});
 		}
 		else if(!notePin){
 			$('#time-wrapper').css({top:'50%'});
 			$('#notes-wrapper').css({opacity: 0});
+			$('#input-wrapper').css({opacity: 0});
 		}
 	})
 
@@ -141,19 +143,22 @@ $(document).ready(function(){
 
 
 
-
 	$('#notes-icon').click(function(){ //brings up notes display & moves date/time to top
 		$(this).toggleClass("pinned");
 		setTimeout(function(){
 			if($('#notes-icon').hasClass('pinned')){
-			var notePin = 'pinned';
-			chrome.storage.sync.set({'notePin': notePin});
-			$('#time-wrapper').css({top: "13%"})
-			setTimeout(function(){
-				$('#notes-wrapper').css({opacity: 1});
-			},400);
+				var notePin = 'pinned';
+				chrome.storage.sync.set({'notePin': notePin});
+				$('#time-wrapper').css({top: "13%"});
+				setTimeout(function(){
+					$('#input-wrapper').css({opacity: 1});
+				},400);
+				setTimeout(function(){
+					$('#notes-wrapper').css({opacity: 1});
+				},400);
 			}
 			else {
+				$('#input-wrapper').css({opacity: 0});
 				$('#notes-wrapper').css({opacity: 0});
 				setTimeout(function(){
 					$('#time-wrapper').css({top:'50%'});
@@ -164,8 +169,6 @@ $(document).ready(function(){
 	});
 
 
-
-
 	chrome.storage.sync.get('notes', function(data){ //load and create saved notes if any exist
 		var notes = data.notes;
 		if(!notes){
@@ -174,17 +177,16 @@ $(document).ready(function(){
 		}
 		else{
 			for (i = 0; i < notes.length; i++){
-				$("#notes-wrapper").append("<div class='note'>"+notes[i]+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
+				$("#notes-wrapper").prepend("<div class='note'>"+notes[i]+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
 			}
 		}
 		$("#input-box").keypress(function (e) { //create notes
 
 	 	var note = $('#input-box').val();
-	 	var $notesWrapper = $('#notes-wrapper');
 	        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
 	            if(note != "" && note != " " && note.charAt(0) != " ") {
 	   	            notes.push($(this).val());
-		            $("#notes-wrapper").append("<div class='note'>"+note+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
+		            $("#notes-wrapper").prepend("<div class='note'>"+note+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
 		            $(this).val('');
 		            chrome.storage.sync.set({'notes':notes});
 	        	}
