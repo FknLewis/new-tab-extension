@@ -205,7 +205,7 @@ $(document).ready(function(){
 	    	$(this).parent().remove();
 	    	chrome.storage.sync.set({'notes':notes});
 	    	$("#input-box").prop('disabled', false);
-	    	$('#input-box').attr('placeholder', "Create a reminder")
+	    	$('#input-box').attr('placeholder', "Create a note")
 		});
 	})
 })
