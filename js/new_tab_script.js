@@ -196,33 +196,34 @@ $(document).ready(function(){
 	        }
     	});
 
-    	$(document).on('keyup', '.note>span', function (e) { //edit notes
-    	var oldNote = $(this).text();
-    	var findOldNote = (oldNote.substring(0,oldNote.length-1)); 
-    	var foundOldNote = notes.indexOf(findOldNote);
-    	console.log(oldNote);
-    		 if(oldNote != "" && oldNote != " " && oldNote.charAt(0) != " ") {
-		        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-		            var note = $(this).text();
-		            notes.splice(foundOldNote, 1);
-		            notes.push(note);
-		            chrome.storage.sync.set({'notes':notes});
-		        }
-		        var note = $(this).text();
-		            notes.splice(foundOldNote, 1);
-		            notes.push(note);
-		            chrome.storage.sync.set({'notes':notes});
-		    }
-    	});
+		$(document).on('focus', '.note>span', function(e){
+			var storedNote = $(this).text();
+			var storedNoteIndex = notes.indexOf(storedNote);
+			console.log('Stored Note: ' + storedNote);
+			console.log('Index of Stored Note: ' + storedNoteIndex);
+			console.log(notes)
+			$(document).on('keyup', '.note>span', function (e) { //edit notes
+		    	var newNote = $(this).text();
+	    		if(newNote != "" && newNote != " " && newNote.charAt(0) != " ") {
+			        /*if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
 
-
-
-
+			        }*/
+			        var newNote = $(this).text();
+			        notes.splice(storedNoteIndex, 1, newNote);
+			        chrome.storage.sync.set({'notes':notes});
+			        console.log(notes);
+			    }
+			    else{
+			    	notes.splice(storedNoteIndex, 1);
+	    			chrome.storage.sync.set({'notes':notes});
+			    }
+	    	});
+		})
 
 		$(document).on('click', '.remove', function() {  //removes note if X is pressed
 			var text = $(this).parent().text();
 			var toFind = (text.substring(0,text.length-1));
-			foundIndex = notes.indexOf(toFind);
+			var foundIndex = notes.indexOf(toFind);
 			notes.splice(foundIndex, 1);
 	    	$(this).parent().remove();
 	    	chrome.storage.sync.set({'notes':notes});
