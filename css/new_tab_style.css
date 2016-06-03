@@ -117,10 +117,17 @@ body {
 	outline: none;
 	width: 100%;
 	border-color: Transparent;  
-	font-size: 2em;
+	font-size: 1.5em;
 	color:white;
 	padding:0em 0.4em;
 	background-color: rgba(0, 0, 0, 0);
+}
+.note>span {
+	display: inline-block;
+	width: 80%;
+}
+.note>span:focus {
+	outline: none;
 }
 
 .note {

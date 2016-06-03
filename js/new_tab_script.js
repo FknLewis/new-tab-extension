@@ -177,7 +177,7 @@ $(document).ready(function(){
 		}
 		else{
 			for (i = 0; i < notes.length; i++){
-				$("#notes-wrapper").prepend("<div class='note'>"+notes[i]+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
+				$("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>"+notes[i]+"</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
 			}
 		}
 		$("#input-box").keypress(function (e) { //create notes
@@ -186,7 +186,7 @@ $(document).ready(function(){
 	        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
 	            if(note != "" && note != " " && note.charAt(0) != " ") {
 	   	            notes.push($(this).val());
-		            $("#notes-wrapper").prepend("<div class='note'>"+note+"<div class='remove glyphicon glyphicon-remove'></div> </div>");
+		            $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>"+note+"</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
 		            $(this).val('');
 		            chrome.storage.sync.set({'notes':notes});
 	        	}
@@ -195,6 +195,26 @@ $(document).ready(function(){
 	        	}
 	        }
     	});
+
+    	$(document).on('keyup', '.note>span', function (e) { //edit notes
+    	var oldNote = $(this).text();
+    	var findOldNote = (oldNote.substring(0,oldNote.length-1)); 
+    	var foundOldNote = notes.indexOf(findOldNote);
+    	console.log(oldNote);
+    		 if(oldNote != "" && oldNote != " " && oldNote.charAt(0) != " ") {
+		        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+		            var note = $(this).text();
+		            notes.splice(foundOldNote, 1);
+		            notes.push(note);
+		            chrome.storage.sync.set({'notes':notes});
+		        }
+		        var note = $(this).text();
+		            notes.splice(foundOldNote, 1);
+		            notes.push(note);
+		            chrome.storage.sync.set({'notes':notes});
+		    }
+    	});
+
 
 
 
