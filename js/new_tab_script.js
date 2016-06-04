@@ -199,15 +199,13 @@ $(document).ready(function(){
 		$(document).on('focus', '.note>span', function(){ //edit notes
 			var storedNote = $(this).text();
 			var storedNoteIndex = notes.indexOf(storedNote);
-			$(this).keyup(function (e) { //edit notes
+			$(this).on('keydown keyup', function (e) { //edit notes
 		    	var newNote = $(this).text();
+		    	if ((e.keyCode == 13) || (e.keyCode == 13 && e.shiftKey)) {
+			        e.preventDefault();
+			        window.getSelection().removeAllRanges();
+			    }
 	    		if(newNote != "" && newNote != " " && newNote.charAt(0) != " ") {
-			        if (e.keyCode == 13 && e.shiftKey) {
-			        	alert('enter+shift');
-			        }
-			        else if(e.keyCode == 13){
-			        	e.preventDefault();
-			  		}
 			        var newNote = $(this).text();
 			        notes.splice(storedNoteIndex, 1, newNote);
 			        chrome.storage.sync.set({'notes':notes});
