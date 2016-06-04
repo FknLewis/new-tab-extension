@@ -199,7 +199,7 @@ $(document).ready(function(){
 		$(document).on('focus', '.note>span', function(){ //edit notes
 			var storedNote = $(this).text();
 			var storedNoteIndex = notes.indexOf(storedNote);
-			$(this).on('keydown keyup', function (e) { //edit notes
+			$(this).on('keydown keyup', function (e) { 
 		    	var newNote = $(this).text();
 		    	if ((e.keyCode == 13) || (e.keyCode == 13 && e.shiftKey)) {
 			        e.preventDefault();
@@ -231,21 +231,21 @@ $(document).ready(function(){
 })
 
 function updateClock(){ //get time
-    var d = new Date(); //returns current date and time
-    var date = d.getDate(); //current date of month
-    var hour = d.getHours(); //current hour of the time
+    var d = new Date(); 
+    var date = d.getDate(); 
+    var hour = d.getHours(); 
     	if (hour <= 9){
     		hour = "0" + hour;
     	}
-    var minute = d.getMinutes(); //current minute of the time
+    var minute = d.getMinutes(); 
 	    if (minute <= 9){
 	    	minute = "0" + minute;
 	    }
-    var second = d.getSeconds(); //current seconds of the time
+    var second = d.getSeconds(); 
 	    if (second <= 9){
 	    	second = "0" + second;
 	    }
-    var weekday = new Array(7); //stores weekdays in an array
+    var weekday = new Array(7); 
 	    weekday[0]=  "SUNDAY";
 		weekday[1] = "MONDAY";
 		weekday[2] = "TUESDAY";
@@ -254,7 +254,7 @@ function updateClock(){ //get time
 		weekday[5] = "FRIDAY";
 		weekday[6] = "SATURDAY";
 	var day = weekday[d.getDay()];
-	var monthno = new Array(12);//stores months in an array
+	var monthno = new Array(12);
 		monthno[0] = "JANUARY";
 		monthno[1] = "FEBRUARY";
 		monthno[2] = "MARCH";
@@ -268,7 +268,7 @@ function updateClock(){ //get time
 		monthno[10] = "NOVEMBER";
 		monthno[11] = "DECEMBER";
 	var month = monthno[d.getMonth()];
-	switch (date){ //adds suffix to date
+	switch (date){ 
 		case 1:
 		case 21:
 		case 31:
@@ -288,8 +288,8 @@ function updateClock(){ //get time
 	}
 
 
-    document.getElementById("date").innerHTML = day + " " + date + " of " + month; //prints day and month date in #date
+    document.getElementById("date").innerHTML = day + " " + date + " of " + month; 
     document.getElementById("time").innerHTML = hour + ":" + minute + ":" + second; 
-    document.getElementById("tab_title").innerHTML = "New Tab - " + hour + ":" + minute + ":" + second;//prints time in #time
+    document.getElementById("tab_title").innerHTML = "New Tab - " + hour + ":" + minute + ":" + second;
     setTimeout(updateClock, 500); //refresh clock every second
 }
