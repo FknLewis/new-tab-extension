@@ -196,22 +196,21 @@ $(document).ready(function(){
 	        }
     	});
 
-		$(document).on('focus', '.note>span', function(e){
+		$(document).on('focus', '.note>span', function(){ //edit notes
 			var storedNote = $(this).text();
 			var storedNoteIndex = notes.indexOf(storedNote);
-			console.log('Stored Note: ' + storedNote);
-			console.log('Index of Stored Note: ' + storedNoteIndex);
-			console.log(notes)
-			$(document).on('keyup', '.note>span', function (e) { //edit notes
+			$(this).keyup(function (e) { //edit notes
 		    	var newNote = $(this).text();
 	    		if(newNote != "" && newNote != " " && newNote.charAt(0) != " ") {
-			        /*if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-
-			        }*/
+			        if (e.keyCode == 13 && e.shiftKey) {
+			        	alert('enter+shift');
+			        }
+			        else if(e.keyCode == 13){
+			        	e.preventDefault();
+			  		}
 			        var newNote = $(this).text();
 			        notes.splice(storedNoteIndex, 1, newNote);
 			        chrome.storage.sync.set({'notes':notes});
-			        console.log(notes);
 			    }
 			    else{
 			    	notes.splice(storedNoteIndex, 1);

@@ -124,7 +124,7 @@ body {
 }
 .note>span {
 	display: inline-block;
-	width: 80%;
+	width: 90%;
 }
 .note>span:focus {
 	outline: none;
@@ -143,8 +143,9 @@ body {
 }
 
 .remove {
-	transition: all 0.5s ease;
+	transition: all 0.3s ease;
 	position: relative;
+	color: rgba(255, 255, 255, 0.3);
 	float: right;
 	line-height: 1.1em;
 	cursor: pointer;
@@ -152,8 +153,10 @@ body {
 }
 
 .remove:hover{
-	-webkit-transform: rotate(360deg);
- 	 transform: rotate(360deg);
+	-webkit-transform: rotate(90deg);
+ 	 transform: rotate(90deg);
+
+	color: rgba(255, 255, 255, 1);
 }
 
 ::-webkit-input-placeholder {
