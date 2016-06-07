@@ -64,7 +64,15 @@ $(document).ready(function(){
 		if(notePin){
 			$('#notes-icon').addClass(notePin);
 			$('#input-box').focus();
-			$('#time-wrapper').css({top: "13%"});
+			if($(window).width() < 768){ //phone
+				$('#time-wrapper').css({top: "16%"});
+			}
+			else if ($(window).width() < 1024){ //ipad 
+				$('#time-wrapper').css({top: "18%"});
+			}
+			else{ //desktop
+				$('#time-wrapper').css({top: "13%"});
+			}
 			$('#notes-wrapper').css({opacity: 1});
 			$('#input-wrapper').css({opacity: 1});
 		}
@@ -149,13 +157,33 @@ $(document).ready(function(){
 			if($('#notes-icon').hasClass('pinned')){
 				var notePin = 'pinned';
 				chrome.storage.sync.set({'notePin': notePin});
-				$('#time-wrapper').css({top: "13%"});
-				setTimeout(function(){
-					$('#input-wrapper').css({opacity: 1});
-				},400);
-				setTimeout(function(){
-					$('#notes-wrapper').css({opacity: 1});
-				},400);
+				if ($(window).width() < 768){ //phone
+					$('#time-wrapper').css({top: "16%"});
+					setTimeout(function(){
+						$('#input-wrapper').css({opacity: 1});
+					},400);
+					setTimeout(function(){
+						$('#notes-wrapper').css({opacity: 1});
+					},400);
+				}
+				else if ($(window).width() < 1024){ //ipad
+					$('#time-wrapper').css({top: "18%"});
+					setTimeout(function(){
+						$('#input-wrapper').css({opacity: 1});
+					},400);
+					setTimeout(function(){
+						$('#notes-wrapper').css({opacity: 1});
+					},400);
+				}
+				else{ //desktop
+					$('#time-wrapper').css({top: "13%"}); 
+					setTimeout(function(){
+						$('#input-wrapper').css({opacity: 1});
+					},400);
+					setTimeout(function(){
+						$('#notes-wrapper').css({opacity: 1});
+					},400);
+				}
 			}
 			else {
 				$('#input-wrapper').css({opacity: 0});
