@@ -9,7 +9,7 @@ html {
 }
 
 ::-webkit-scrollbar {
-    width: 12px;
+    width: 6px;
 }
 ::-webkit-scrollbar-track {
     background-color: rgba(0, 0, 0, 0.0);
@@ -151,9 +151,6 @@ body {
 }
 
 .remove:active{
-	-webkit-transform: rotate(90deg);
- 	 transform: rotate(90deg);
-
 	color: rgba(255, 255, 255, 1);
 }
 
@@ -162,18 +159,17 @@ body {
 }
 #input-wrapper {
 	opacity: 0;
-	margin-top: 5vh;
+	margin-top: 10vh;
 	position: relative;
 	transition: all 0.5s ease;
-	width: 40vw;
-	left: 30vw;
+	width: 100%;
 	background-color: rgba(0, 0, 0, 0.8);
 	border-top: 1px solid rgba(255, 255, 255, 0.3);
 	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 	border-left: 1px solid rgba(255, 255, 255, 0.3);
 }
 #notes-wrapper {
-	max-height: 55%;
+	max-height: 63%;
 	overflow-x: hidden;
 	overflow-y: auto;
 	transition: all 0.5s ease;
@@ -183,8 +179,7 @@ body {
 	border-left: 1px solid rgba(255, 255, 255, 0.3);
 	color: white;
 	position: relative;
-	width: 40vw;
-	left: 30vw;
+	width: 100%;
 }
 
 #time {
@@ -210,9 +205,23 @@ body {
 
 /* for desktop*/
 @media only screen and (min-width: 1024px) {
+	::-webkit-scrollbar {
+    	width: 12px;
+	}
     #time-wrapper {
         width: 30%;
     }
+    #input-wrapper {
+    	margin-top: 5vh;
+    	width: 40%;
+    	left: 30%;
+    }
+    #notes-wrapper {
+    	max-height: 55%;
+    	width: 40%;
+    	left: 30%;
+    }
+
     .icons {
     	transition: all 0.5s ease;
     }
@@ -227,7 +236,7 @@ body {
 	 	transform: rotate(-360deg);
 	}
 	.remove:hover{
-		-webkit-transform: rotate(360deg);
-	 	 transform: rotate(360deg);
+		-webkit-transform: rotate(90deg);
+	 	 transform: rotate(90deg);
 	}
 }
