@@ -7,7 +7,9 @@ html {
 	max-height: 100vh;
 	font-size: 1vw;
 }
-
+#folders::-webkit-scrollbar{
+	height: 8px;
+}
 ::-webkit-scrollbar {
     width: 6px;
 }
@@ -184,12 +186,12 @@ body {
 }
 #tabs{
 	line-height: 3vh;
-	height: 3vh;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 #folders {
-
+	white-space: nowrap;
+	overflow-x: auto;
 	-webkit-user-select: none; 
 	margin: 0;
 	font-family: Arial;
@@ -203,13 +205,17 @@ body {
 	color: rgba(255, 255, 255, 0.5);
 	display: inline-block;
 	text-align: center;	
-	width: 10%;
+	margin: 0 1%;
+	border-color: Transparent; 
 }
 
 #folders > li:hover{
 	color: white;
 	cursor: pointer;
 	font-weight: bold;
+}
+#folders > li:focus {
+	outline: none;
 }
 
 #folders .active-tab{
@@ -240,7 +246,7 @@ body {
 /* for desktop*/
 @media only screen and (min-width: 1024px) {
 	::-webkit-scrollbar {
-    	width: 12px;
+    	width: 8px;
 	}
     #time-wrapper {
         width: 30%;

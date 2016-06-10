@@ -257,10 +257,28 @@ $(document).ready(function(){
 		});
 	})
 
-	$('#folders li').click(function(){
+	$(document).on('click', '#folders li', function(){
 		$('#folders li').removeClass('active-tab');
 		$(this).addClass('active-tab');
 	})
+
+	$('#add').click(function(){
+		addFolder();
+	})
+
+	$(document).on('dblclick', '#folders li', function(){
+		$(this).attr('contenteditable', 'true');
+		$(this).focus();
+	})
+
+	$('#folders li').focusout(function(){
+		$('#folders li').removeAttr('contenteditable');
+	})
+
+	$("#folders").mousewheel(function(event, delta) {
+      this.scrollLeft -= (delta * 30);
+      event.preventDefault();
+   });
 })
 
 function updateClock(){ //get time
@@ -325,4 +343,21 @@ function updateClock(){ //get time
     document.getElementById("time").innerHTML = hour + ":" + minute + ":" + second; 
     document.getElementById("tab_title").innerHTML = "New Tab - " + hour + ":" + minute + ":" + second;
     setTimeout(updateClock, 500); //refresh clock every second
+}
+
+function addFolder(){
+	$("<li contenteditable='true'></li>").insertBefore('#add');
+	$('#add').prev().focus();
+	$("#folders li").focusout(function(){
+		var folderName = $(this).text();
+		if(folderName == "" || folderName == " " || folderName.charAt(0) == " "){
+			$(this).remove();
+		}
+		else if(folderName.length > 15){
+			$(this).prop('title', folderName);
+			folderName = folderName.substring(0,15) + '...';
+			$(this).text(folderName);
+		}
+		$(this).removeAttr('contenteditable');
+	})
 }
