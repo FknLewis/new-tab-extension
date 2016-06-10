@@ -284,7 +284,6 @@ $(document).ready(function(){
 
 	$(document).on('focusout', '#folders li', function(){ //add class when lose focus/shorten name if too long
 		var folderName = $(this).text();
-		console.log(folderName);
 		$('#folders li').removeAttr('contenteditable');
 		$('#folders li').removeClass('active-tab');
 		$(this).addClass('active-tab');
@@ -297,6 +296,10 @@ $(document).ready(function(){
 			$(this).text(folderName);
 			$(this).attr('title', $(this).text());
 		}
+		if(folderName == "" || folderName.trim().length <= 0){
+			$(this).remove();
+		}
+		console.log(folderName);
 	})
 
 	$("#folders").mousewheel(function(event, delta) { //scroll folders with mouse wheel
@@ -367,5 +370,5 @@ function updateClock(){ //get time
     document.getElementById("date").innerHTML = day + " " + date + " of " + month; 
     document.getElementById("time").innerHTML = hour + ":" + minute + ":" + second; 
     document.getElementById("tab_title").innerHTML = "New Tab - " + hour + ":" + minute + ":" + second;
-    /*setTimeout(updateClock, 500); *///refresh clock every second
+    setTimeout(updateClock, 500); //refresh clock every second
 }
