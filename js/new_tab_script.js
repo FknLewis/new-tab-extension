@@ -256,6 +256,11 @@ $(document).ready(function(){
 	    	$('#input-box').attr('placeholder', "Create a note")
 		});
 	})
+
+	$('#folders li').click(function(){
+		$('#folders li').removeClass('active-tab');
+		$(this).addClass('active-tab');
+	})
 })
 
 function updateClock(){ //get time

@@ -109,6 +109,7 @@ body {
 #input-box{
 	overflow: auto;
 	font-family: 'Arial', serif;
+	border-top: 3px solid white;
 	border-bottom: 3px solid white;
 	resize: none;
 	font-weight: bold;
@@ -135,7 +136,7 @@ body {
 	display: inline-block;
 	color:white;
 	padding: 0.5em;
-	border-top: 1px solid rgba(255, 255, 255, 0.3);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 	border-right: 1px solid rgba(255, 255, 255, 0.3);
 	word-wrap: break-word;
 }
@@ -180,6 +181,39 @@ body {
 	color: white;
 	position: relative;
 	width: 100%;
+}
+#tabs{
+	line-height: 3vh;
+	height: 3vh;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+#folders {
+
+	-webkit-user-select: none; 
+	margin: 0;
+	font-family: Arial;
+	list-style: none;
+	color: white;
+	padding: 0;
+}
+#folders > li {
+	transition: all 0.2s ease;
+	font-weight: bold;
+	color: rgba(255, 255, 255, 0.5);
+	display: inline-block;
+	text-align: center;	
+	width: 10%;
+}
+
+#folders > li:hover{
+	color: white;
+	cursor: pointer;
+	font-weight: bold;
+}
+
+#folders .active-tab{
+	color: white;
 }
 
 #time {
@@ -238,5 +272,6 @@ body {
 	.remove:hover{
 		-webkit-transform: rotate(90deg);
 	 	 transform: rotate(90deg);
+	 	 color: white;
 	}
 }
