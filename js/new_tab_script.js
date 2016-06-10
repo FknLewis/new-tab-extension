@@ -257,28 +257,53 @@ $(document).ready(function(){
 		});
 	})
 
-	$(document).on('click', '#folders li', function(){
+	$(document).on('click', '#folders li', function(){ //add active tab
 		$('#folders li').removeClass('active-tab');
 		$(this).addClass('active-tab');
 	})
 
-	$('#add').click(function(){
-		addFolder();
+	$('#add').click(function(){ // add folders
+		$("<li contenteditable='true'></li>").insertBefore('#add');
+		$('#add').prev().focus();
 	})
 
-	$(document).on('dblclick', '#folders li', function(){
+	$(document).on('dblclick', '#folders li', function(e){ //double click to edit
 		$(this).attr('contenteditable', 'true');
 		$(this).focus();
+		var folderName = $(this).attr('title');
+		$(this).text(folderName);
+		$(this).removeAttr('title');
 	})
 
-	$('#folders li').focusout(function(){
+	$(document).on('keyup keydown','#folders li', function(e){ //leave input when enter is pressed or shift enter
+		if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13) || (e.keyCode == 13 && e.shiftKey)) {
+			e.preventDefault();
+			$(this).blur();
+		}
+	})
+
+	$(document).on('focusout', '#folders li', function(){ //add class when lose focus/shorten name if too long
+		var folderName = $(this).text();
+		console.log(folderName);
 		$('#folders li').removeAttr('contenteditable');
+		$('#folders li').removeClass('active-tab');
+		$(this).addClass('active-tab');
+		if(folderName.length > 15){
+			$(this).attr('title', $(this).text());
+			shortFolderName=folderName.substring(0,15) + '...';
+			$(this).text(shortFolderName);
+		}
+		else if(folderName.length <= 15){
+			$(this).text(folderName);
+			$(this).attr('title', $(this).text());
+		}
 	})
 
-	$("#folders").mousewheel(function(event, delta) {
+	$("#folders").mousewheel(function(event, delta) { //scroll folders with mouse wheel
       this.scrollLeft -= (delta * 30);
       event.preventDefault();
    });
+
 })
 
 function updateClock(){ //get time
@@ -342,22 +367,5 @@ function updateClock(){ //get time
     document.getElementById("date").innerHTML = day + " " + date + " of " + month; 
     document.getElementById("time").innerHTML = hour + ":" + minute + ":" + second; 
     document.getElementById("tab_title").innerHTML = "New Tab - " + hour + ":" + minute + ":" + second;
-    setTimeout(updateClock, 500); //refresh clock every second
-}
-
-function addFolder(){
-	$("<li contenteditable='true'></li>").insertBefore('#add');
-	$('#add').prev().focus();
-	$("#folders li").focusout(function(){
-		var folderName = $(this).text();
-		if(folderName == "" || folderName == " " || folderName.charAt(0) == " "){
-			$(this).remove();
-		}
-		else if(folderName.length > 15){
-			$(this).prop('title', folderName);
-			folderName = folderName.substring(0,15) + '...';
-			$(this).text(folderName);
-		}
-		$(this).removeAttr('contenteditable');
-	})
+    /*setTimeout(updateClock, 500); *///refresh clock every second
 }
