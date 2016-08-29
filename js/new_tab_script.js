@@ -18,7 +18,7 @@ $(document).ready(function(){
 	    $("#icon-wrapper").css({'opacity':1}, 200);
 
 	   	i = setTimeout(function () {
-	       	$("#icon-wrapper").css({'opacity':0},400);
+	       	$("#icon-wrapper").css({'opacity':0},400); 
 	   	}, 2000);
 
 	})
@@ -34,7 +34,7 @@ $(document).ready(function(){
 
 	var background = ["images/backgrounds/1.jpg", // stores background images in array
 					 "images/backgrounds/2.png",
-					 "images/backgrounds/4.jpg", 
+					 "images/backgrounds/4.jpg",
 					 "images/backgrounds/8.jpg",
 					 "images/backgrounds/9.jpg",
 					 "images/backgrounds/10.jpg",
@@ -46,8 +46,8 @@ $(document).ready(function(){
 					 "images/backgrounds/firewatch.jpg"];
 	var bgAmount = background.length;
 	var bg = background[Math.floor((Math.random() * bgAmount) + 0)];
-	
-	chrome.storage.sync.get('background',function(data){ 
+
+	chrome.storage.sync.get('background',function(data){
 		if(!data.background){
 			$('body').css({'background-image': 'url(' + bg + ')'}); //sets random background if no stored background is found
 			$('#pin').addClass("glyphicon glyphicon-heart-empty");
@@ -67,7 +67,7 @@ $(document).ready(function(){
 			if($(window).width() < 768){ //phone
 				$('#time-wrapper').css({top: "16%"});
 			}
-			else if ($(window).width() < 1024){ //ipad 
+			else if ($(window).width() < 1024){ //ipad
 				$('#time-wrapper').css({top: "18%"});
 			}
 			else{ //desktop
@@ -128,7 +128,7 @@ $(document).ready(function(){
 			$('#pin').addClass("glyphicon glyphicon-heart-empty");
 			chrome.storage.sync.remove('background');
 		}
-		$('body').css({'background-image': 'url(' + background[left] + ')'});		
+		$('body').css({'background-image': 'url(' + background[left] + ')'});
 	});
 
 	$('#bg-right').click(function(){ //navigates to next background
@@ -176,7 +176,7 @@ $(document).ready(function(){
 					},400);
 				}
 				else{ //desktop
-					$('#time-wrapper').css({top: "13%"}); 
+					$('#time-wrapper').css({top: "13%"});
 					setTimeout(function(){
 						$('#input-wrapper').css({opacity: 1});
 					},400);
@@ -227,7 +227,7 @@ $(document).ready(function(){
 		$(document).on('focus', '.note>span', function(){ //edit notes
 			var storedNote = $(this).text();
 			var storedNoteIndex = notes.indexOf(storedNote);
-			$(this).on('keydown keyup', function (e) { 
+			$(this).on('keydown keyup', function (e) {
 		    	var newNote = $(this).text();
 		    	if ((e.keyCode == 13) || (e.keyCode == 13 && e.shiftKey)) {
 			        e.preventDefault();
@@ -310,21 +310,21 @@ $(document).ready(function(){
 })
 
 function updateClock(){ //get time
-    var d = new Date(); 
-    var date = d.getDate(); 
-    var hour = d.getHours(); 
+    var d = new Date();
+    var date = d.getDate();
+    var hour = d.getHours();
     	if (hour <= 9){
     		hour = "0" + hour;
     	}
-    var minute = d.getMinutes(); 
+    var minute = d.getMinutes();
 	    if (minute <= 9){
 	    	minute = "0" + minute;
 	    }
-    var second = d.getSeconds(); 
+    var second = d.getSeconds();
 	    if (second <= 9){
 	    	second = "0" + second;
 	    }
-    var weekday = new Array(7); 
+    var weekday = new Array(7);
 	    weekday[0]=  "SUNDAY";
 		weekday[1] = "MONDAY";
 		weekday[2] = "TUESDAY";
@@ -347,7 +347,7 @@ function updateClock(){ //get time
 		monthno[10] = "NOVEMBER";
 		monthno[11] = "DECEMBER";
 	var month = monthno[d.getMonth()];
-	switch (date){ 
+	switch (date){
 		case 1:
 		case 21:
 		case 31:
@@ -367,8 +367,8 @@ function updateClock(){ //get time
 	}
 
 
-    document.getElementById("date").innerHTML = day + " " + date + " of " + month; 
-    document.getElementById("time").innerHTML = hour + ":" + minute + ":" + second; 
+    document.getElementById("date").innerHTML = day + " " + date + " of " + month;
+    document.getElementById("time").innerHTML = hour + ":" + minute + ":" + second;
     document.getElementById("tab_title").innerHTML = "New Tab - " + hour + ":" + minute + ":" + second;
     setTimeout(updateClock, 500); //refresh clock every second
 }
