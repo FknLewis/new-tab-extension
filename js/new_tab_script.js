@@ -18,7 +18,7 @@ $(document).ready(function(){
 	    $("#icon-wrapper").css({'opacity':1}, 200);
 
 	   	i = setTimeout(function () {
-	       	$("#icon-wrapper").css({'opacity':0},400); 
+	       	$("#icon-wrapper").css({'opacity':0},400);
 	   	}, 2000);
 
 	})
