@@ -205,16 +205,35 @@ $(document).ready(function(){
 		}
 		else{
 			for (i = 0; i < notes.length; i++){
-				$("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>"+notes[i]+"</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+				$("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>"+notes[i].note+"</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
 			}
 		}
+
+		$('#folders li').click(function(){
+			var noteFolder = $(this).text();
+			$('#notes-wrapper .note').remove();
+			console.log(noteFolder);
+			for (i = 0; i < notes.length; i++){
+				if(notes[i].folder == noteFolder){
+					$("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>"+notes[i].note+"</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+				}
+				else if (noteFolder == "All"){
+					$("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>"+notes[i].note+"</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+				}
+			}
+		})
+
 		$("#input-box").keypress(function (e) { //create notes
 
-	 	var note = $('#input-box').val();
+	 	var noteText = $('#input-box').val();
+		var noteFolder = $('.active-tab').text();
+		var note = {folder:noteFolder, note:noteText};
 	        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-	            if(note != "" && note != " " && note.charAt(0) != " ") {
-	   	            notes.push($(this).val());
-		            $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>"+note+"</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+	            if(noteText != "" && noteText != " " && noteText.charAt(0) != " ") {
+	   	            notes.push(note);
+									console.log(note);
+									console.log(notes);
+		            $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>"+noteText+"</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
 		            $(this).val('');
 		            chrome.storage.sync.set({'notes':notes});
 	        	}
