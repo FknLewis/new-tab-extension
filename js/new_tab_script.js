@@ -209,7 +209,7 @@ $(document).ready(function(){
 			}
 		}
 
-		$('#folders li').click(function(){
+		$('#folders li').click(function(){ // show notes to specific folder
 			var noteFolder = $(this).text();
 			$('#notes-wrapper .note').remove();
 			console.log(noteFolder);
@@ -224,7 +224,6 @@ $(document).ready(function(){
 		})
 
 		$("#input-box").keypress(function (e) { //create notes
-
 	 	var noteText = $('#input-box').val();
 		var noteFolder = $('.active-tab').text();
 		var note = {folder:noteFolder, note:noteText};
@@ -244,18 +243,33 @@ $(document).ready(function(){
     	});
 
 		$(document).on('focus', '.note>span', function(){ //edit notes
+
 			var storedNote = $(this).text();
 			var storedNoteIndex = notes.indexOf(storedNote);
+			var storedNoteIndex = functiontofindIndexByKeyValue(notes, "note", storedNote);
+			function functiontofindIndexByKeyValue(notes, note, storedNote) {
+
+				for (var i = 0; i < notes.length; i++) {
+
+					if (notes[i][note] == storedNote) {
+						return i;
+					}
+				}
+				return null;
+			}
 			$(this).on('keydown keyup', function (e) {
-		    	var newNote = $(this).text();
+		    	var newNoteText = $(this).text();
+					var noteFolder = $('.active-tab').text();
+					var newNote = {folder:noteFolder, note:newNoteText};
 		    	if ((e.keyCode == 13) || (e.keyCode == 13 && e.shiftKey)) {
 			        e.preventDefault();
 			        window.getSelection().removeAllRanges();
 			    }
-	    		if(newNote != "" && newNote != " " && newNote.charAt(0) != " ") {
-			        var newNote = $(this).text();
+	    		if(newNoteText != "" && newNoteText != " " && newNoteText.charAt(0) != " ") {
+			        var newNoteText = $(this).text();
 			        notes.splice(storedNoteIndex, 1, newNote);
 			        chrome.storage.sync.set({'notes':notes});
+							console.log(notes);
 			    }
 			    else{
 			    	notes.splice(storedNoteIndex, 1);
