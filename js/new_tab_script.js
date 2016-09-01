@@ -243,23 +243,28 @@ $(document).ready(function(){
     	});
 
 		$(document).on('focus', '.note>span', function(){ //edit notes
-
 			var storedNote = $(this).text();
-			var storedNoteIndex = notes.indexOf(storedNote);
-			var storedNoteIndex = functiontofindIndexByKeyValue(notes, "note", storedNote);
-			function functiontofindIndexByKeyValue(notes, note, storedNote) {
-
-				for (var i = 0; i < notes.length; i++) {
-
-					if (notes[i][note] == storedNote) {
+			var storedNoteIndex = findIndexByKeyValue(notes, "note", storedNote);
+			var foundFolder = notes[storedNoteIndex].folder;
+			function findIndexByKeyValue(array, property, string){
+				for (var i = 0; i < array.length; i++){
+					if (array[i][property] == string){
 						return i;
 					}
 				}
 				return null;
 			}
-			$(this).on('keydown keyup', function (e) {
+			console.log(foundFolder);
+
+
+			$(this).on('keydown keyup', function (e) { //save notes on keyup
 		    	var newNoteText = $(this).text();
-					var noteFolder = $('.active-tab').text();
+					if ($('.active-tab').text() === "All"){
+						var noteFolder = foundFolder;
+					}
+					else {
+						var noteFolder = $('.active-tab').text();
+					}
 					var newNote = {folder:noteFolder, note:newNoteText};
 		    	if ((e.keyCode == 13) || (e.keyCode == 13 && e.shiftKey)) {
 			        e.preventDefault();
