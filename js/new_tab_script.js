@@ -196,6 +196,67 @@ $(document).ready(function(){
 		}, 250)
 	});
 
+	chrome.storage.sync.get('folders', function(data){ //loads folders
+		var folders = data.folders;
+		if(!folders){
+			var folders = [];
+			chrome.storage.sync.set({'folders':folders});
+		}
+		else{
+			for (i=0; i < folders.length; i++){
+				$('#add').before("<li>"+folders[i]+"</li>");
+			}
+		}
+
+		$('#add').click(function(){ // add folders
+			$("<li contenteditable='true'></li>").insertBefore('#add');
+			$('#add').prev().focus();
+		})
+
+		$(document).on('dblclick', '#folders li', function(e){ //double click to edit
+			var folderName = $(this).text();
+			var folderIndex = folders.indexOf("folderName");
+			$(this).attr('contenteditable', 'true');
+			$(this).focus();
+			var folderName = $(this).attr('title');
+			$(this).text(folderName);
+			$(this).removeAttr('title');
+		})
+
+		$(document).on('keyup keydown','#folders li', function(e){ //leave input when enter is pressed or shift enter
+			if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13) || (e.keyCode == 13 && e.shiftKey)) {
+				e.preventDefault();
+				$(this).blur();
+			}
+		})
+
+		$(document).on('focusout', '#folders li', function(){ //add active tab to new folder, remove if no name, sort big names
+			var folderName = $(this).text();
+			$('#folders li').removeAttr('contenteditable');
+			$('#folders li').removeClass('active-tab');
+			$(this).addClass('active-tab');
+			if(folderName.length > 15){
+				$(this).attr('title', $(this).text());
+				shortFolderName=folderName.substring(0,15) + '...';
+				$(this).text(shortFolderName);
+				
+			}
+			else if(folderName.length <= 15){
+				$(this).text(folderName);
+				$(this).attr('title', $(this).text());
+			}
+			if(folderName == "" || folderName.trim().length <= 0){
+				$(this).remove();
+			}
+			else if(folderName !== "" || folderName.trim().length <= 0){
+				folders.push(folderName);
+			}
+			chrome.storage.sync.set({'folders':folders});
+			chrome.storage.sync.remove('folders');
+			console.log(folders);
+		})
+
+	})
 
 	chrome.storage.sync.get('notes', function(data){ //load and create saved notes if any exist
 		var notes = data.notes;
@@ -212,7 +273,6 @@ $(document).ready(function(){
 		$('#folders li').click(function(){ // show notes to specific folder
 			var noteFolder = $(this).text();
 			$('#notes-wrapper .note').remove();
-			console.log(noteFolder);
 			for (i = 0; i < notes.length; i++){
 				if(notes[i].folder == noteFolder){
 					$("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>"+notes[i].note+"</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
@@ -259,13 +319,14 @@ $(document).ready(function(){
 
 			$(this).on('keydown keyup', function (e) { //save notes on keyup
 		    	var newNoteText = $(this).text();
-					if ($('.active-tab').text() === "All"){
-						var noteFolder = foundFolder;
-					}
-					else {
-						var noteFolder = $('.active-tab').text();
-					}
-					var newNote = {folder:noteFolder, note:newNoteText};
+				if ($('.active-tab').text() === "All"){
+					var noteFolder = foundFolder;
+				}
+				else {
+					var noteFolder = $('.active-tab').text();
+				}
+				var newNote = {folder:noteFolder, note:newNoteText};
+
 		    	if ((e.keyCode == 13) || (e.keyCode == 13 && e.shiftKey)) {
 			        e.preventDefault();
 			        window.getSelection().removeAllRanges();
@@ -298,46 +359,6 @@ $(document).ready(function(){
 	$(document).on('click', '#folders li', function(){ //add active tab
 		$('#folders li').removeClass('active-tab');
 		$(this).addClass('active-tab');
-	})
-
-	$('#add').click(function(){ // add folders
-		$("<li contenteditable='true'></li>").insertBefore('#add');
-		$('#add').prev().focus();
-	})
-
-	$(document).on('dblclick', '#folders li', function(e){ //double click to edit
-		$(this).attr('contenteditable', 'true');
-		$(this).focus();
-		var folderName = $(this).attr('title');
-		$(this).text(folderName);
-		$(this).removeAttr('title');
-	})
-
-	$(document).on('keyup keydown','#folders li', function(e){ //leave input when enter is pressed or shift enter
-		if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13) || (e.keyCode == 13 && e.shiftKey)) {
-			e.preventDefault();
-			$(this).blur();
-		}
-	})
-
-	$(document).on('focusout', '#folders li', function(){ //add class when lose focus/shorten name if too long
-		var folderName = $(this).text();
-		$('#folders li').removeAttr('contenteditable');
-		$('#folders li').removeClass('active-tab');
-		$(this).addClass('active-tab');
-		if(folderName.length > 15){
-			$(this).attr('title', $(this).text());
-			shortFolderName=folderName.substring(0,15) + '...';
-			$(this).text(shortFolderName);
-		}
-		else if(folderName.length <= 15){
-			$(this).text(folderName);
-			$(this).attr('title', $(this).text());
-		}
-		if(folderName == "" || folderName.trim().length <= 0){
-			$(this).remove();
-		}
-		console.log(folderName);
 	})
 
 	$("#folders").mousewheel(function(event, delta) { //scroll folders with mouse wheel
