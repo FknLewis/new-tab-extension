@@ -1,1 +1,1 @@
-"# newtab-gaming" 
+"# newtab-chrome" 
