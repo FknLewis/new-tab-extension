@@ -198,6 +198,7 @@ $(document).ready(function(){
 
 	chrome.storage.sync.get('folders', function(data){ //loads folders
 		var folders = data.folders;
+		console.log(folders);
 		if(!folders){
 			var folders = [];
 			chrome.storage.sync.set({'folders':folders});
@@ -216,8 +217,10 @@ $(document).ready(function(){
 		$(document).on('dblclick', '#folders li', function(e){ //double click to edit
 			var folderName = $(this).text();
 			var folderIndex = folders.indexOf("folderName");
-			$(this).attr('contenteditable', 'true');
-			$(this).focus();
+			if(folderName != "All"){
+				$(this).attr('contenteditable', 'true');
+				$(this).focus();
+			}
 			var folderName = $(this).attr('title');
 			$(this).text(folderName);
 			$(this).removeAttr('title');
@@ -239,7 +242,7 @@ $(document).ready(function(){
 				$(this).attr('title', $(this).text());
 				shortFolderName=folderName.substring(0,15) + '...';
 				$(this).text(shortFolderName);
-				
+
 			}
 			else if(folderName.length <= 15){
 				$(this).text(folderName);
@@ -252,7 +255,6 @@ $(document).ready(function(){
 				folders.push(folderName);
 			}
 			chrome.storage.sync.set({'folders':folders});
-			chrome.storage.sync.remove('folders');
 			console.log(folders);
 		})
 
