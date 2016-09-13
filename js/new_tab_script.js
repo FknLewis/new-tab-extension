@@ -1,6 +1,5 @@
 $(document).ready(function(){
 	updateClock(); //initial loading of clock
-
 	setTimeout(function(){
 		$("#icon-wrapper").css({'opacity':1},200); //fade in icons on load
 	},100);
@@ -196,16 +195,28 @@ $(document).ready(function(){
 		}, 250)
 	});
 
-	chrome.storage.sync.get('folders', function(data){ //loads folders
+	chrome.storage.sync.get(['folders', 'notes', 'activeTag'], function(data){ //loads folders
 		var folders = data.folders;
 		console.log(folders);
 		if(!folders){
-			var folders = [];
+			var folders = ["All", "Work", "Personal"];
 			chrome.storage.sync.set({'folders':folders});
 		}
 		else{
 			for (i=0; i < folders.length; i++){
 				$('#add').before("<li>"+folders[i]+"</li>");
+			}
+		}
+
+		var activeTag = data.activeTag; //set active tag on last active menu
+		if(!activeTag){
+			$('#folders li:nth-child(1)').addClass('active-tab');
+		}
+		else {
+			for (var i = 0; i < folders.length+1; i++){
+				if($('#folders li:nth-child('+i+')').text() === activeTag){
+					$('#folders li:nth-child('+i+')').addClass('active-tab');
+				}
 			}
 		}
 
@@ -216,6 +227,7 @@ $(document).ready(function(){
 
 		$(document).on('dblclick', '#folders li', function(e){ //double click to edit
 			var folderName = $(this).text();
+			console.log(folderName);
 			var folderIndex = folders.indexOf("folderName");
 			if(folderName != "All"){
 				$(this).attr('contenteditable', 'true');
@@ -233,42 +245,53 @@ $(document).ready(function(){
 			}
 		})
 
-		$(document).on('focusout', '#folders li', function(){ //add active tab to new folder, remove if no name, sort big names
-			var folderName = $(this).text();
-			$('#folders li').removeAttr('contenteditable');
-			$('#folders li').removeClass('active-tab');
-			$(this).addClass('active-tab');
-			if(folderName.length > 15){
-				$(this).attr('title', $(this).text());
-				shortFolderName=folderName.substring(0,15) + '...';
-				$(this).text(shortFolderName);
+		$(document).on('focus', '#folders li', function(){ //add active tab to new folder, remove if no name, sort big names
+			var oldFolderName = $(this).text();
+			var findFolder = (oldFolderName.substring(0,oldFolderName.length-1));
+			var folderIndex = folders.indexOf(oldFolderName);
+			console.log(folderIndex);
+			$(this).on('focusout', function(){
+				var folderName = $(this).text();
+				$('#folders li').removeAttr('contenteditable');
+				$('#folders li').removeClass('active-tab');
+				$(this).addClass('active-tab');
+				if(folderName.length > 15){
+					$(this).attr('title', $(this).text());
+					shortFolderName=folderName.substring(0,15) + '...';
+					$(this).text(shortFolderName);
 
-			}
-			else if(folderName.length <= 15){
-				$(this).text(folderName);
-				$(this).attr('title', $(this).text());
-			}
-			if(folderName == "" || folderName.trim().length <= 0){
-				$(this).remove();
-			}
-			else if(folderName !== "" || folderName.trim().length <= 0){
-				folders.push(folderName);
-			}
-			chrome.storage.sync.set({'folders':folders});
-			console.log(folders);
+				}
+				else if(folderName.length <= 15){
+					$(this).text(folderName);
+					$(this).attr('title', $(this).text());
+				}
+				if(folderName == "" || folderName.trim().length <= 0){
+					$(this).remove();
+					folders.splice(folderIndex, 1);
+				}
+				else if(folderName !== "" || folderName.trim().length <= 0){
+					folders.splice(folderIndex, 1, folderName);
+				}
+				chrome.storage.sync.set({'folders':folders});
+				/*chrome.storage.sync.remove('folders');*/
+				console.log(folders);
+			})
 		})
 
-	})
-
-	chrome.storage.sync.get('notes', function(data){ //load and create saved notes if any exist
-		var notes = data.notes;
+		var notes = data.notes; //load notes
 		if(!notes){
 			var notes=[];
 			chrome.storage.sync.set({'notes':notes});
 		}
 		else{
+			var noteFolder = $('.active-tab').text();
 			for (i = 0; i < notes.length; i++){
-				$("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>"+notes[i].note+"</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+				if(notes[i].folder == noteFolder){
+					$("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>"+notes[i].note+"</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+				}
+				else if (noteFolder == "All"){
+					$("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>"+notes[i].note+"</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+				}
 			}
 		}
 
@@ -359,8 +382,10 @@ $(document).ready(function(){
 	})
 
 	$(document).on('click', '#folders li', function(){ //add active tab
+		var activeTag = $(this).text();
 		$('#folders li').removeClass('active-tab');
 		$(this).addClass('active-tab');
+		chrome.storage.sync.set({"activeTag":activeTag});
 	})
 
 	$("#folders").mousewheel(function(event, delta) { //scroll folders with mouse wheel
