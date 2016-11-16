@@ -195,15 +195,17 @@ $(document).ready(function(){
 		}, 250)
 	});
 
-	chrome.storage.sync.get(['folders', 'notes', 'activeTag'], function(data){ //loads folders
+	chrome.storage.sync.get(['folders', 'notes', 'activeTag'], function(data){ //FOLDERS
 		var folders = data.folders;
-		console.log(folders);
-		if(!folders){
+		console.log(folders[1]);
+		if(!folders || !folders[0]){ //ADD DEFAULT FOLDERS IF NONE FOUND
 			var folders = ["All", "Work", "Personal"];
+			$('#add').before("<li>"+folders[i]+"</li>")
 			chrome.storage.sync.set({'folders':folders});
 		}
 		else{
-			for (i=0; i < folders.length; i++){
+			for (i=0; i < folders.length; i++){ //LOAD IN FOLDERS
+				var activeTag = data.activeTag; //set active tag on last active menu
 				$('#add').before("<li>"+folders[i]+"</li>");
 			}
 		}
@@ -227,7 +229,6 @@ $(document).ready(function(){
 
 		$(document).on('dblclick', '#folders li', function(e){ //double click to edit
 			var folderName = $(this).text();
-			console.log(folderName);
 			var folderIndex = folders.indexOf("folderName");
 			if(folderName != "All"){
 				$(this).attr('contenteditable', 'true');
@@ -247,34 +248,45 @@ $(document).ready(function(){
 
 		$(document).on('focus', '#folders li', function(){ //add active tab to new folder, remove if no name, sort big names
 			var oldFolderName = $(this).text();
+			console.log(oldFolderName.length);
 			var findFolder = (oldFolderName.substring(0,oldFolderName.length-1));
 			var folderIndex = folders.indexOf(oldFolderName);
-			console.log(folderIndex);
 			$(this).on('focusout', function(){
 				var folderName = $(this).text();
 				$('#folders li').removeAttr('contenteditable');
 				$('#folders li').removeClass('active-tab');
 				$(this).addClass('active-tab');
-				if(folderName.length > 15){
+				if(folderName.length > 15){ //ABBREVIATE FOLDER NAME IF MORE THAN 15 CHARACTERS
 					$(this).attr('title', $(this).text());
-					shortFolderName=folderName.substring(0,15) + '...';
+					shortFolderName = folderName.substring(0,15) + '...';
 					$(this).text(shortFolderName);
 
 				}
-				else if(folderName.length <= 15){
+				else {
 					$(this).text(folderName);
 					$(this).attr('title', $(this).text());
 				}
-				if(folderName == "" || folderName.trim().length <= 0){
-					$(this).remove();
-					folders.splice(folderIndex, 1);
+
+				if (folderName == "" || folderName.trim().length <= 0){ //IF FOLDER NAME IS EMPTY
+					$(this).remove(); //REMOVE FOLDER LIST ITEM
+					if (folderIndex > 0){ //REMOVE FOLDER AND REMOVE FROM ARRAY
+						folders.splice(folderIndex, 1);
+						console.log("Removed Folder, Update:" + folders)
+					}
 				}
-				else if(folderName !== "" || folderName.trim().length <= 0){
-					folders.splice(folderIndex, 1, folderName);
+
+				else if (folderName !== "" || folderName.trim().length <= 0){ //IF FOLDER NAME IS NOT EMPTY
+					console.log(oldFolderName);
+					if(oldFolderName.length > 0){ //ADD FOLDER TO ARRAY
+							folders.splice(folderIndex, 1, folderName);
+					}
+					else{
+						folders.push(folderName);
+					}
+					console.log("Add New Folder: " + folders);
 				}
 				chrome.storage.sync.set({'folders':folders});
 				/*chrome.storage.sync.remove('folders');*/
-				console.log(folders);
 			})
 		})
 

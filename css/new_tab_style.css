@@ -51,7 +51,7 @@ body {
 	line-height: 2em;
 }
 
-.icons { 
+.icons {
 	-webkit-user-select: none;
 	color: white;
 	background-color: rgba(0, 0, 0, 0.8);
@@ -117,7 +117,7 @@ body {
 	font-weight: bold;
 	outline: none;
 	width: 100%;
-	border-color: Transparent;  
+	border-color: Transparent;
 	font-size: 1.5em;
 	color:white;
 	padding:0em 0.4em;
@@ -192,7 +192,7 @@ body {
 #folders {
 	white-space: nowrap;
 	overflow-x: auto;
-	-webkit-user-select: none; 
+	-webkit-user-select: none;
 	margin: 0;
 	font-family: Arial;
 	list-style: none;
@@ -204,9 +204,9 @@ body {
 	font-weight: bold;
 	color: rgba(255, 255, 255, 0.5);
 	display: inline-block;
-	text-align: center;	
+	text-align: center;
 	margin: 0 1%;
-	border-color: Transparent; 
+	border-color: Transparent;
 }
 
 #folders > li:hover{
