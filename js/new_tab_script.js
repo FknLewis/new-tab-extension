@@ -46,7 +46,7 @@ $(document).ready(function(){
 	var bgAmount = background.length;
 	var bg = background[Math.floor((Math.random() * bgAmount) + 0)];
 
-	chrome.storage.sync.get('background',function(data){
+	chrome.storage.sync.get('background',function(data){ //get background
 		if(!data.background){
 			$('body').css({'background-image': 'url(' + bg + ')'}); //sets random background if no stored background is found
 			$('#pin').addClass("glyphicon glyphicon-heart-empty");
@@ -197,7 +197,7 @@ $(document).ready(function(){
 
 	chrome.storage.sync.get(['folders', 'notes', 'activeTag'], function(data){ //FOLDERS
 		var folders = data.folders;
-		console.log(folders[1]);
+		var notes = data.notes;
 		if(!folders || !folders[0]){ //ADD DEFAULT FOLDERS IF NONE FOUND
 			var folders = ["All", "Work", "Personal"];
 			$('#add').before("<li>"+folders[i]+"</li>")
@@ -248,9 +248,16 @@ $(document).ready(function(){
 
 		$(document).on('focus', '#folders li', function(){ //add active tab to new folder, remove if no name, sort big names
 			var oldFolderName = $(this).text();
-			console.log(oldFolderName.length);
 			var findFolder = (oldFolderName.substring(0,oldFolderName.length-1));
 			var folderIndex = folders.indexOf(oldFolderName);
+			console.log(notes.length);
+			for (i = 0; i < notes.length; i++){
+				if(notes[i].folder === oldFolderName){
+					console.log(notes[i].folder + " " + notes[i].note);
+				}
+			}
+
+
 			$(this).on('focusout', function(){
 				var folderName = $(this).text();
 				$('#folders li').removeAttr('contenteditable');
@@ -276,14 +283,12 @@ $(document).ready(function(){
 				}
 
 				else if (folderName !== "" || folderName.trim().length <= 0){ //IF FOLDER NAME IS NOT EMPTY
-					console.log(oldFolderName);
 					if(oldFolderName.length > 0){ //ADD FOLDER TO ARRAY
 							folders.splice(folderIndex, 1, folderName);
 					}
 					else{
 						folders.push(folderName);
 					}
-					console.log("Add New Folder: " + folders);
 				}
 				chrome.storage.sync.set({'folders':folders});
 				/*chrome.storage.sync.remove('folders');*/
@@ -327,8 +332,6 @@ $(document).ready(function(){
 	        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
 	            if(noteText != "" && noteText != " " && noteText.charAt(0) != " ") {
 	   	            notes.push(note);
-									console.log(note);
-									console.log(notes);
 		            $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>"+noteText+"</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
 		            $(this).val('');
 		            chrome.storage.sync.set({'notes':notes});
