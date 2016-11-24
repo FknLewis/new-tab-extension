@@ -198,6 +198,12 @@ $(document).ready(function(){
 	chrome.storage.sync.get(['activeTag', 'nObject'], function(data){ //FOLDERS
 		var nObject = data.nObject;
 		console.log(nObject);
+		var existingFolders = [];
+		for(i = 0; i < nObject.length; i++){
+			if(existingFolders.indexOf(nObject[i].folder) === -1){
+				existingFolders.push(nObject[i].folder);
+			}
+		}
 		// chrome.storage.sync.remove('nObject');
 		if(!nObject || nObject[0].folder == ""){ //ADD DEFAULT FOLDERS IF NONE FOUND
 			var nObject = [{"folder": "All"}, {"folder": "Work"}, {"folder": "Personal"}];
@@ -205,9 +211,9 @@ $(document).ready(function(){
 			chrome.storage.sync.set({'nObject':nObject});
 		}
 		else{
-			for (i = 0; i < nObject.length; i++){
-				if(nObject[i].folder !== ""){
-					$('#add').before("<li>"+nObject[i].folder+"</li>");
+			for (i = 0; i < existingFolders.length; i++){
+				if(existingFolders[i] !== ""){
+					$('#add').before("<li>"+existingFolders[i]+"</li>");
 				}
 			}
 		}
@@ -218,7 +224,7 @@ $(document).ready(function(){
 		}
 		else {
 			for (var i = 0; i < nObject.length+1; i++){ //LOOP FOLDERS
-				if($('#folders li:nth-child('+i+')').text() === activeTag){ //IF FOLDER TEXT MATCHES STORED ACTIVE TAG
+				if($('#folders li:nth-child('+i+')').text().toLowerCase() === activeTag.toLowerCase()){ //IF FOLDER TEXT MATCHES STORED ACTIVE TAG
 					$('#folders li:nth-child('+i+')').addClass('active-tab'); //ADD CLASS ACTIVE-TAB CLASS
 				}
 			}
@@ -257,33 +263,17 @@ $(document).ready(function(){
 			}
 		})
 
-		$(document).on('focus', '#folders li', function(){ //add active tab to new folder, remove if no name, sort big names
-			console.log(nObject);
+		$(document).on('focus', '#folders li', function(){
 			var oldFolderName = $(this).text();
-			console.log(oldFolderName);
-			for (i = 0; i < nObject.length; i++){
-				if(nObject[i].folder === oldFolderName){
-					var nObjectIndex = i;
-				}
-			}
+			var nObjectIndex = findIndexByKeyValue(nObject, "folder", $(this).text());
 
 			var currentFolders = [];
 			for (i = 0; i < $('#folders li').length - 1; i++){
-				currentFolders.push($('#folders li:nth-child('+i+')').text());
+				currentFolders.push($('#folders li:nth-child('+i+')').text().toLowerCase());
 			}
-			// var oldNotes = [];
-			//
-			// for (i = 0; i < nObject.length; i++){
-			// 	if(nObject[i].folder === oldFolderName){
-			// 		oldNotes.push(nObject[i]);
-			// 		console.log(oldNotes);
-			// 	}
-			// }
-
 
 			$(this).on('focusout', function(){
 				var folderName = $(this).text();
-				console.log(folderName);
 				$('#folders li').removeAttr('contenteditable');
 				$('#folders li').removeClass('active-tab');
 				$(this).addClass('active-tab');
@@ -300,71 +290,43 @@ $(document).ready(function(){
 				}
 
 
+				var currentFolderIndex = currentFolders.indexOf(folderName.toLowerCase()); //INDEX OF ALREADY EXISITING FOLDER IN ARRAY OF CURRENTFOLDERS
 
-
-
-				// if (folderName !== "" || folderName.trim().length <= 0){ //IF FOLDER NAME IS NOT EMPTY
-				// 	if(oldFolderName.length > 0){ //ADD FOLDER TO ARRAY
-				// 		nObject.splice(nObjectIndex, 1, {"folder": folderName});
-				// 	}
-				// 	else{
-				// 		nObject.push({"folder": "lol"});
-				// 		console.log(nObject);
-				// 	}
-				// }
-
-				if(oldFolderName.length > 0){
-					if (folderName !== "" || folderName.trim().length <= 0){
-						nObject.splice(nObjectIndex, 1, {"folder": folderName});
-					}
-					else {
-						console.log("lol")
-					}
-				}
-
-				else if (folderName !== "" || folderName.trim().length <=0 && oldFolderName.length <= 0){
-					nObject.push({"folder": folderName});
-				}
-
-
-
-
-
-
-
-
-				for(i = 0; i < currentFolders.length; i++){
-					if (folderName.toLowerCase() == currentFolders[i].toLowerCase() && folderName !== "" || folderName.trim().length <= 0){
+				if(folderName === "" || folderName.trim().length <= 0) { //IF FOLDER IS EMPTY
+						$(this).prev().addClass('active-tab');
+						chrome.storage.sync.set({"activeTag":$(this).prev().text()})
 						$(this).remove();
-						for (i = 0; i < nObject.length; i++){
-							if(nObject[i].folder === folderName){
-								var duplicateIndex = i;
-							}
+						if (!nObjectIndex){
+
 						}
-						nObject.splice(duplicateIndex, 1);
+						else if(nObjectIndex >= 0){
+							nObject.splice(nObjectIndex, 1);
+						}
+						else {
+
+						}
+				}
+
+				else { //IF FOLDER NAME ISN'T EMPTY
+					if (currentFolderIndex !== -1){ //IF NEW FOLDER NAME ALREADY EXISTS
+						//$(this).remove(); //REMOVE FOLDER
+						$('#folders li:nth-child('+currentFolderIndex+')').addClass('active-tab'); //ADD ACTIVE-TAB TO FOLDER THAT TRIED TO BE CREATED BUT ALREADY EXISTS
+						chrome.storage.sync.set({"activeTag":folderName});
+					}
+					else { //IF NEW FOLDER NAME DOESN'T ALREADY EXIST
+						if (oldFolderName){ //IF FOLDER EXISTED AND IS BEING RENAMED
+							nObject.splice(nObjectIndex, 1, {"folder": folderName}); //REPLACE FOLDER IN ARRAY WITH NEW NAME
+						}
+						else { //IF FOLDER IS NEW
+							nObject.push({"folder": folderName}); //ADD NEW FOLDER TO ARRAY
+							chrome.storage.sync.set({"activeTag":folderName}); //SYNC NEW ACTIVE TAG
+							$('#folders li:last').prev().addClass('active-tab'); //ADD ACTIVE TAG TO NEW FOLDER
+						}
 					}
 				}
 
-				for (i =0; i < $('#folders li').length; i++){
-					if ($('#folders li:nth-child('+i+')').text() === folderName.toLowerCase()){
-						console.log(i);
-						$('#folders li:nth-child('+i+')').addClass('active-tab');
-					}
-				}
-
-			 if (folderName == "" || folderName.trim().length <= 0){ //IF FOLDER NAME IS EMPTY
-					$(this).remove(); //REMOVE FOLDER LIST ITEM
-					console.log(nObject)
-					if(nObjectIndex >= 0){
-						nObject.splice(nObjectIndex, 1);
-						console.log("remove");
-					}
-				}
-
-
-				chrome.storage.sync.set({'folders':folders});
 				chrome.storage.sync.set({'nObject':nObject});
-				/*chrome.storage.sync.remove('folders');*/
+				//chrome.storage.sync.remove('nObject');
 			})
 		})
 
@@ -485,6 +447,7 @@ function findIndexByKeyValue(array, property, string){
 	}
 	return null;
 }
+
 
 function updateClock(){ //get time
     var d = new Date();
