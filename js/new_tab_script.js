@@ -199,12 +199,14 @@ $(document).ready(function(){
 		var nObject = data.nObject;
 		console.log(nObject);
 		var existingFolders = [];
-		for(i = 0; i < nObject.length; i++){
-			if(existingFolders.indexOf(nObject[i].folder) === -1){
-				existingFolders.push(nObject[i].folder);
+		if(nObject){
+			for(i = 0; i < nObject.length; i++){
+				if(existingFolders.indexOf(nObject[i].folder) === -1){
+					existingFolders.push(nObject[i].folder);
+				}
 			}
 		}
-		// chrome.storage.sync.remove('nObject');
+		//chrome.storage.sync.remove('nObject');
 		if(!nObject || nObject[0].folder == ""){ //ADD DEFAULT FOLDERS IF NONE FOUND
 			var nObject = [{"folder": "All"}, {"folder": "Work"}, {"folder": "Personal"}];
 			$('#add').before("<li>"+nObject[i]+"</li>")
@@ -266,6 +268,16 @@ $(document).ready(function(){
 		$(document).on('focus', '#folders li', function(){
 			var oldFolderName = $(this).text();
 			var nObjectIndex = findIndexByKeyValue(nObject, "folder", $(this).text());
+			var notes = [];
+			if(nObject){
+				for (i = 0; i < nObject.length; i++){
+					if(nObject[i].folder === oldFolderName && nObject[i].note){
+						console.log("Found note: " + nObject[i].note);
+						notes.push(nObject[i].note);
+						console.log(notes);
+					}
+				}
+			}
 
 			var currentFolders = [];
 			for (i = 0; i < $('#folders li').length - 1; i++){
@@ -315,7 +327,17 @@ $(document).ready(function(){
 					}
 					else { //IF NEW FOLDER NAME DOESN'T ALREADY EXIST
 						if (oldFolderName){ //IF FOLDER EXISTED AND IS BEING RENAMED
-							nObject.splice(nObjectIndex, 1, {"folder": folderName}); //REPLACE FOLDER IN ARRAY WITH NEW NAME
+							if(notes){
+								nObject.splice(nObjectIndex, 1, {"folder":folderName});
+								for(i = 0; i < notes.length; i++){
+									nObject.push({"folder":folderName, "note": notes[i]});
+									console.log(nObject);
+								}
+							}
+							else{
+								nObject.splice(nObjectIndex, 1, {"folder":folderName});
+							}
+							console.log("splice"+nObjectIndex);
 						}
 						else { //IF FOLDER IS NEW
 							nObject.push({"folder": folderName}); //ADD NEW FOLDER TO ARRAY
@@ -324,7 +346,6 @@ $(document).ready(function(){
 						}
 					}
 				}
-
 				chrome.storage.sync.set({'nObject':nObject});
 				//chrome.storage.sync.remove('nObject');
 			})
