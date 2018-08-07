@@ -201,6 +201,9 @@ body {
 	padding: 0;
 }
 #folders > li {
+	max-width: 150px;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	transition: all 0.2s ease;
 	font-weight: bold;
 	color: rgba(255, 255, 255, 0.5);
@@ -208,6 +211,9 @@ body {
 	text-align: center;
 	margin: 0 1%;
 	border-color: Transparent;
+}
+#folders > li:focus{
+	max-width: none;
 }
 
 #folders > li:hover{

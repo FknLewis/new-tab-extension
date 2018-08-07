@@ -214,7 +214,7 @@ $(document).ready(function(){
 		else{
 			for (i = 0; i < existingFolders.length; i++){
 				if(existingFolders[i] !== ""){
-					$('#add').before("<li>"+existingFolders[i]+"</li>");
+					$('#add').before("<li title="+existingFolders[i]+">"+existingFolders[i]+"</li>");
 				}
 			}
 		}
@@ -300,17 +300,6 @@ $(document).ready(function(){
 				$('#folders li').removeClass('active-tab');
 				$(this).addClass('active-tab');
 
-				if(folderName.length > 15){ //ABBREVIATE FOLDER NAME IF MORE THAN 15 CHARACTERS
-					$(this).attr('title', $(this).text());
-					shortFolderName = folderName.substring(0,15) + '...';
-					$(this).text(shortFolderName);
-				}
-
-				else {
-					$(this).text(folderName);
-					$(this).attr('title', $(this).text());
-				}
-
 
 				var currentFolderIndex = currentFolders.indexOf(folderName.toLowerCase()); //INDEX OF ALREADY EXISITING FOLDER IN ARRAY OF CURRENTFOLDERS
 
@@ -352,6 +341,7 @@ $(document).ready(function(){
 							}
 						}
 						else { //IF FOLDER IS NEW
+							$(this).attr('title', folderName);
 							nObject.push({"folder": folderName}); //ADD NEW FOLDER TO ARRAY
 							chrome.storage.sync.set({"activeTag":folderName}); //SYNC NEW ACTIVE TAG
 							$('#folders li:last').prev().addClass('active-tab'); //ADD ACTIVE TAG TO NEW FOLDER
@@ -363,9 +353,8 @@ $(document).ready(function(){
 			})
 		})
 
-		$('#folders li').click(function(){ // show notes to specific folder
+		$("#folders").on("click","li",function(){ // show notes to specific folder
 			var noteFolder = $(this).text();
-			var notes = nObject.note;
 			$('#notes-wrapper .note').remove();
 				for (i = 0; i < nObject.length; i++){
 					if(nObject[i].note){
