@@ -42,7 +42,14 @@ $(document).ready(function(){
 					 "images/backgrounds/13.jpg",
 					 "images/backgrounds/14.png",
 					 "images/backgrounds/15.jpg",
-					 "images/backgrounds/firewatch.jpg"];
+					 "images/backgrounds/16.jpg",
+					 "images/backgrounds/17.jpg",
+					 "images/backgrounds/18.jpg",
+					 "images/backgrounds/19.jpg",
+					 "images/backgrounds/20.jpg",
+					 "images/backgrounds/21.png",
+					 "images/backgrounds/22.jpg",
+					 "images/backgrounds/firewatch.jpg",];
 	var bgAmount = background.length;
 	var bg = background[Math.floor((Math.random() * bgAmount) + 0)];
 
