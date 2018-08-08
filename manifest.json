@@ -1,7 +1,7 @@
 {
 "name": "Low Poly",
 "description": "Replaces new tab page with a minimalist style dashboard",
-"version": "1.1.0",
+"version": "1.1.1",
 "manifest_version": 2,
 "permissions": ["storage"],
 "icons": {
