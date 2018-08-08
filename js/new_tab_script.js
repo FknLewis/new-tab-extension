@@ -276,11 +276,14 @@ $(document).ready(function() {
         //chrome.storage.sync.remove('nObject');
         if (!nObject || nObject[0].folder == "") { //ADD DEFAULT FOLDERS IF NONE FOUND
             var nObject = [{
-                "folder": "All"
+                "folder": "All",
+                "notes": []
             }, {
-                "folder": "Work"
+                "folder": "Work",
+                "notes": []
             }, {
-                "folder": "Personal"
+                "folder": "Personal",
+                "notes": []
             }];
             $('#add').before("<li>" + nObject[i] + "</li>")
             chrome.storage.sync.set({
@@ -314,14 +317,16 @@ $(document).ready(function() {
             }
         }
 
-        var notes = nObject.note; //load notes
-        var noteFolder = $('.active-tab').text();
-        if (notes) {
-            for (i = 0; i < notes.length; i++) {
-                if (nObject[i].folder == noteFolder) {
-                    $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + nObject[i].note + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
-                } else if (noteFolder == "All") {
-                    $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + nObject[i].note + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+
+        var noteFolder = $('.active-tab').text(); //load notes
+        for (var i = 0; i < nObject.length; i++) {
+            if (nObject[i].folder == noteFolder) {
+                for (var j = 0; j < nObject[i].notes.length; j++) {
+                    $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + nObject[i].notes[j] + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+                }
+            } else if (noteFolder == "All") {
+                for (var j = 0; j < nObject[i].notes.length; j++) {
+                    $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + nObject[i].notes[j] + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
                 }
             }
         }
@@ -351,7 +356,6 @@ $(document).ready(function() {
         $(document).on('focus', '#folders li', function() {
             var oldFolderName = $(this).text();
             var nObjectIndex = findIndexByKeyValue(nObject, "folder", $(this).text());
-            var notes = [];
             if (nObject) {
                 for (i = 0; i < nObject.length; i++) {
                     if (nObject[i].folder === oldFolderName && nObject[i].note) {
@@ -374,11 +378,20 @@ $(document).ready(function() {
 
                 var currentFolderIndex = currentFolders.indexOf(folderName.toLowerCase()); //INDEX OF ALREADY EXISITING FOLDER IN ARRAY OF CURRENTFOLDERS
                 if (folderName === "" || folderName.trim().length <= 0) { //IF FOLDER IS EMPTY
-                    $(this).prev().addClass('active-tab');
+                    $('#folders li:nth-child(1)').addClass('active-tab');
                     chrome.storage.sync.set({
-                        "activeTag": $(this).prev().text()
+                        "activeTag": $('#folders li:nth-child(1)').text()
                     })
+										var nowActive = $('.active-tab').text();
                     $(this).remove();
+										$('#notes-wrapper .note').remove();
+										for (var i = 0; i < nObject.length; i++){
+											for(var j = 0; j < nObject[i].notes.length; j++){
+												if(nObject[i].folder !== oldFolderName){
+													$("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + nObject[i].notes[j] + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+												}
+											}
+										}
                     for (i = nObject.length - 1; i >= 0; i--) {
                         if (!nObjectIndex) {
 
@@ -391,38 +404,32 @@ $(document).ready(function() {
                         }
                     }
                 } else { //IF FOLDER NAME ISN'T EMPTY
-										if(oldFolderName){
-										}
+                    if (oldFolderName) {}
                     if (!oldFolderName && currentFolderIndex !== -1) { //IF FOLDERNAME IS FOUND
                         $(this).remove(); //REMOVE FOLDER
                         $('#folders li:nth-child(' + currentFolderIndex + ')').addClass('active-tab'); //ADD ACTIVE-TAB TO FOLDER THAT TRIED TO BE CREATED BUT ALREADY EXISTS
                         chrome.storage.sync.set({
                             "activeTag": folderName
                         });
-                    }
-										else if (oldFolderName && currentFolderIndex !== -1) {
-											var oldFolderIndex = currentFolders.indexOf(oldFolderName.toLowerCase());
-                    	$('#folders li:nth-child('+oldFolderIndex+')').text(oldFolderName);
-                    }
-										else { //IF NEW FOLDER NAME DOESN'T ALREADY EXIST
+                    } else if (oldFolderName && currentFolderIndex !== -1) {
+                        var oldFolderIndex = currentFolders.indexOf(oldFolderName.toLowerCase());
+                        $('#folders li:nth-child(' + oldFolderIndex + ')').text(oldFolderName);
+                    } else { //IF NEW FOLDER NAME DOESN'T ALREADY EXIST
                         if (oldFolderName) { //IF FOLDER EXISTED AND IS BEING RENAMED
-                            if (notes) {
-                                for (i = 0; i < notes.length + 1; i++) {
-                                    nObject.splice(nObjectIndex, 1);
-                                    nObject.push({
-                                        "folder": folderName,
-                                        "note": notes[i]
-                                    });
-                                }
-                            } else {
-                                nObject.splice(nObjectIndex, 1, {
-                                    "folder": folderName
-                                });
-                            }
+                            for(var i = 0; i < nObject.length; i++){
+															if(nObject[i].folder == oldFolderName){
+																nObject[i].folder = folderName;
+																chrome.storage.sync.set({
+				                            "activeTag": folderName
+				                        });
+																break;
+															}
+														}
                         } else { //IF FOLDER IS NEW
                             $(this).attr('title', folderName);
                             nObject.push({
-                                "folder": folderName
+                                "folder": folderName,
+                                "notes": []
                             }); //ADD NEW FOLDER TO ARRAY
                             chrome.storage.sync.set({
                                 "activeTag": folderName
@@ -438,58 +445,63 @@ $(document).ready(function() {
             })
         })
 
+
         $("#folders").on("click", "li", function() { // show notes to specific folder
             var noteFolder = $(this).text();
+
             $('#notes-wrapper .note').remove();
             for (i = 0; i < nObject.length; i++) {
-                if (nObject[i].note) {
-                    if (nObject[i].folder == noteFolder) {
-                        $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + nObject[i].note + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
-                    } else if (noteFolder == "All") {
-                        $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + nObject[i].note + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+                if (nObject[i].folder == noteFolder) {
+
+                    for (var j = 0; j < nObject[i].notes.length; j++) {
+                        $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + nObject[i].notes[j] + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+                    }
+                } else if (noteFolder == "All") {
+                    for (var j = 0; j < nObject[i].notes.length; j++) {
+                        $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + nObject[i].notes[j] + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
                     }
                 }
             }
         })
 
+
         $("#input-box").keypress(function(e) { //create notes
             var noteText = $('#input-box').val();
             var noteFolder = $('.active-tab').text();
-            var note = {
-                folder: noteFolder,
-                note: noteText
-            };
             if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
                 if (noteText != "" && noteText != " " && noteText.charAt(0) != " ") {
-                    nObject.push(note);
-                    $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + noteText + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
-                    $(this).val('');
-                    chrome.storage.sync.set({
-                        'nObject': nObject
-                    });
+                    for (var i = 0; i < nObject.length; i++) {
+                        if (nObject[i].folder == noteFolder) {
+                            nObject[i].notes.push(noteText);
+                            $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + noteText + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+                            $(this).val('');
+                            chrome.storage.sync.set({
+                                'nObject': nObject
+                            });
+                        }
+                    }
                 } else {
                     $(this).val('');
                 }
             }
         });
 
+
+
         $(document).on('focus', '.note>span', function() { //edit notes
+						var ogStored = $(this).text();
             var storedNote = $(this).text();
-            var storedNoteIndex = findIndexByKeyValue(nObject, "note", storedNote);
-            var foundFolder = nObject[storedNoteIndex].folder;
+            //var storedNoteIndex = findIndexByKeyValue(nObject, "note", storedNote);
+						// for(var i=0; i<nObject.length; i++){
+						// 	if(nObject[i].notes.includes(storedNote)){
+						// 		var storedNoteIndex = nObject[i].notes[];
+						// 	}
+						// }
+            //var foundFolder = nObject[storedNoteIndex].folder;
 
 
             $(this).on('keydown keyup', function(e) { //save notes on keyup
                 var newNoteText = $(this).text();
-                if ($('.active-tab').text() === "All") {
-                    var noteFolder = foundFolder;
-                } else {
-                    var noteFolder = $('.active-tab').text();
-                }
-                var newNote = {
-                    folder: noteFolder,
-                    note: newNoteText
-                };
 
                 if ((e.keyCode == 13) || (e.keyCode == 13 && e.shiftKey)) {
                     e.preventDefault();
@@ -497,15 +509,26 @@ $(document).ready(function() {
                 }
                 if (newNoteText != "" && newNoteText != " " && newNoteText.charAt(0) != " ") {
                     var newNoteText = $(this).text();
-                    nObject.splice(storedNoteIndex, 1, {
-                        "folder": noteFolder,
-                        "note": newNoteText
-                    });
-                    chrome.storage.sync.set({
-                        'nObject': nObject
-                    });
+										for(var i = 0; i < nObject.length; i++){
+											for(var j = 0; j < nObject[i].notes.length; j++){
+												if(nObject[i].notes[j] == storedNote){
+													nObject[i].notes[j] = newNoteText;
+													storedNote = newNoteText;
+												}
+											}
+										}
+                     chrome.storage.sync.set({
+                         'nObject': nObject
+                     });
                 } else {
-                    nObject.splice(storedNoteIndex, 1);
+                    for(var i = 0; i < nObject.length; i++){
+											for(var j = 0; j <nObject[i].notes.length; j++){
+												if(nObject[i].notes[j] == storedNote){
+													nObject[i].notes.splice(j, 1);
+													$(this).parent().remove();
+												}
+											}
+										}
                     chrome.storage.sync.set({
                         'nObject': nObject
                     });
@@ -516,14 +539,16 @@ $(document).ready(function() {
         $(document).on('click', '.remove', function() { //removes note if X is pressed
             var text = $(this).parent().text();
             var toFind = (text.substring(0, text.length - 1));
-            var storedNoteIndex = findIndexByKeyValue(nObject, "note", toFind);
-            nObject.splice(storedNoteIndex, 1);
-            $(this).parent().remove();
-            chrome.storage.sync.set({
-                'nObject': nObject
-            });
-            $("#input-box").prop('disabled', false);
-            $('#input-box').attr('placeholder', "Create a note")
+            for (var i = 0; i < nObject.length; i++) {
+                if (nObject[i].notes.includes(toFind)) {
+                    storedNoteIndex = nObject[i].notes.indexOf(toFind);
+                    nObject[i].notes.splice(storedNoteIndex, 1);
+                    $(this).parent().remove();
+                    chrome.storage.sync.set({
+                        'nObject': nObject
+                    });
+                }
+            }
         });
     })
 
