@@ -322,11 +322,11 @@ $(document).ready(function() {
         for (var i = 0; i < noteObject.length; i++) {
             if (noteObject[i].folder == noteFolder) {
                 for (var j = 0; j < noteObject[i].notes.length; j++) {
-                    $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + noteObject[i].notes[j] + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+                    $("#notes-wrapper").append("<div class='note'><span contenteditable='true'>" + noteObject[i].notes[j] + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
                 }
             } else if (noteFolder == "All") {
                 for (var j = 0; j < noteObject[i].notes.length; j++) {
-                    $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + noteObject[i].notes[j] + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+                    $("#notes-wrapper").append("<div class='note'><span contenteditable='true'>" + noteObject[i].notes[j] + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
                 }
             }
         }
@@ -388,7 +388,7 @@ $(document).ready(function() {
 										for (var i = 0; i < noteObject.length; i++){
 											for(var j = 0; j < noteObject[i].notes.length; j++){
 												if(noteObject[i].folder !== oldFolderName){
-													$("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + noteObject[i].notes[j] + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+													$("#notes-wrapper").append("<div class='note'><span contenteditable='true'>" + noteObject[i].notes[j] + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
 												}
 											}
 										}
@@ -454,11 +454,11 @@ $(document).ready(function() {
                 if (noteObject[i].folder == noteFolder) {
 
                     for (var j = 0; j < noteObject[i].notes.length; j++) {
-                        $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + noteObject[i].notes[j] + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+                        $("#notes-wrapper").append("<div class='note'><span contenteditable='true'>" + noteObject[i].notes[j] + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
                     }
                 } else if (noteFolder == "All") {
                     for (var j = 0; j < noteObject[i].notes.length; j++) {
-                        $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + noteObject[i].notes[j] + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+                        $("#notes-wrapper").append("<div class='note'><span contenteditable='true'>" + noteObject[i].notes[j] + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
                     }
                 }
             }
@@ -473,7 +473,7 @@ $(document).ready(function() {
                     for (var i = 0; i < noteObject.length; i++) {
                         if (noteObject[i].folder == noteFolder) {
                             noteObject[i].notes.push(noteText);
-                            $("#notes-wrapper").prepend("<div class='note'><span contenteditable='true'>" + noteText + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
+                            $("#notes-wrapper").append("<div class='note'><span contenteditable='true'>" + noteText + "</span><div class='remove glyphicon glyphicon-remove'></div> </div>");
                             $(this).val('');
                             chrome.storage.sync.set({
                                 'noteObject': noteObject
